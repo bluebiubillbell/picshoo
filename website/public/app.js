@@ -83,7 +83,7 @@ const STR = {
       </ol>
       <h4>On the line</h4>
       <ul>
-        <li>Double-tap ⌘ and drag: it hangs on the line and lands on the clipboard</li>
+        <li>Double-tap ⌘ and drag: capcap's editor opens for markup or a scrolling capture, and once you confirm it hangs on the line and lands on the clipboard</li>
         <li>⌘⇧3, ⌘⇧4 and ⌘⇧5 hang too, once Picshoo handles your screenshots</li>
         <li>Click to copy, hold to mark it up, double click to look closer</li>
         <li>Drag into an app to send a copy, into a folder to keep it</li>
@@ -154,7 +154,7 @@ const STR = {
       </ol>
       <h4>晾衣绳</h4>
       <ul>
-        <li>双击 ⌘ 并框选：直接挂上绳子，同时复制到剪贴板</li>
+        <li>双击 ⌘ 并框选：打开编辑器，可标注或截长图，确认后挂上绳子并复制到剪贴板</li>
         <li>打开「接管截图」后，⌘⇧3、⌘⇧4、⌘⇧5 也会挂上绳子</li>
         <li>单击复制，长按标注，双击放大看</li>
         <li>拖到 app 里发送一份，拖到文件夹里保存并取下</li>
