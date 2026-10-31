@@ -73,6 +73,23 @@ for y in 0..<side {
         mask.setColor(NSColor(deviceRed: 0, green: 0, blue: 0, alpha: CGFloat(a) / 255), atX: x, y: y)
     }
 }
+// Layer for Resources/AppIcon.icon: the whole drawing as alpha, at the icon
+// canvas size. icon.json colours it club blue on white, white on black in
+// dark mode.
+let layer = bitmap(1024)
+NSGraphicsContext.saveGraphicsState()
+NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: layer)
+NSGraphicsContext.current?.imageInterpolation = .high
+let full = bitmap(w)
+for y in 0..<h {
+    for x in 0..<w {
+        full.setColor(NSColor(deviceRed: 1, green: 1, blue: 1, alpha: CGFloat(ink[y * w + x]) / 255), atX: x, y: y)
+    }
+}
+full.draw(in: NSRect(x: 0, y: 0, width: 1024, height: 1024))
+NSGraphicsContext.restoreGraphicsState()
+png(layer, root.appendingPathComponent("Resources/AppIcon.icon/Assets/tag.png"))
+
 for px in [22, 44] {
     let rep = bitmap(px)
     NSGraphicsContext.saveGraphicsState()

@@ -114,11 +114,16 @@ cp "design/MenuBarIcon@2x.png" "$RESOURCES/MenuBarIcon@2x.png"
 # lives in an asset catalog so every standard AppKit control picks it up.
 mkdir -p "$RESOURCES/Fonts"
 cp Resources/Fonts/*.ttf "$RESOURCES/Fonts/"
+# The app icon is compiled from Resources/AppIcon.icon (Icon Composer), which
+# gives macOS 26 its own dark variant, white on black. The icns actool writes
+# alongside is what earlier macOS versions show.
 ASSETS_TMP="$(mktemp -d)"
-xcrun actool Resources/Picshoo.xcassets --compile "$ASSETS_TMP" --platform macosx \
+xcrun actool Resources/Picshoo.xcassets Resources/AppIcon.icon --compile "$ASSETS_TMP" --platform macosx \
     --minimum-deployment-target 14.0 --accent-color AccentColor \
+    --app-icon AppIcon --include-all-app-icons \
     --output-partial-info-plist "$ASSETS_TMP/partial.plist" > /dev/null
 cp "$ASSETS_TMP/Assets.car" "$RESOURCES/Assets.car"
+cp "$ASSETS_TMP/AppIcon.icns" "$RESOURCES/AppIcon.icns"
 rm -rf "$ASSETS_TMP"
 
 # Copy localization bundles (.lproj). The app loads these directly for its

@@ -4,14 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-	<key>CFBundleExecutable</key>
+	<key>CFBundleDisplayName</key>
 	<string>Picshoo</string>
-	<key>CFBundleIconFile</key>
-	<string>AppIcon</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.bingyu.picshoo</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -49,6 +43,16 @@
 			</array>
 		</dict>
 	</array>
+	<key>CFBundleExecutable</key>
+	<string>Picshoo</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.bingyu.picshoo</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -61,12 +65,10 @@
 	</array>
 	<key>CFBundleName</key>
 	<string>Picshoo</string>
-	<key>CFBundleDisplayName</key>
-	<string>Picshoo</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.7.23</string>
+	<string>0.1.1</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -79,21 +81,21 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>724</string>
-	<key>NSAccentColorName</key>
-	<string>AccentColor</string>
+	<string>2</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>NSAccentColorName</key>
+	<string>AccentColor</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Picshoo reads the current Finder selection when you use edit, pin, or upload shortcuts</string>
 	<key>NSMainNibFile</key>
 	<string></string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Picshoo needs microphone access to record audio with screen recordings</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 	<key>NSScreenCaptureUsageDescription</key>
 	<string>Picshoo needs screen recording access to capture screenshots and recordings.</string>
 </dict>
