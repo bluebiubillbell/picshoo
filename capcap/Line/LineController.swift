@@ -783,13 +783,6 @@ final class LineController: NSObject, NSMenuDelegate {
         clipboard.toolTip = L("Images you copy hang on the line too")
         menu.addItem(clipboard)
 
-        let direct = LineMenuItem(L("Hang captures without editing")) {
-            LineSettings.hangsCapturesWithoutEditing.toggle()
-        }
-        direct.state = LineSettings.hangsCapturesWithoutEditing ? .on : .off
-        direct.toolTip = L("A capture hangs as soon as you choose the area. Press and hold it on the line to mark it up.")
-        menu.addItem(direct)
-
         let bringDown = NSMenuItem(title: L("Bring the line down"), action: nil, keyEquivalent: "")
         let options = NSMenu()
         let hover = LineMenuItem(L("When the pointer rests in the menu bar")) {

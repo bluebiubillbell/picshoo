@@ -1685,7 +1685,7 @@ extension OverlayWindowController: SelectionViewDelegate {
         preSnapshot: CGImage?
     ) {
         let captureTask = takeWindowCaptureTask(windowID: windowID, request: request)
-        if postCaptureAction == .edit, !hangsWithoutEditing,
+        if postCaptureAction == .edit,
            let snapshotImage = preSnapshotImage(
                captureRect: request.captureRect, screen: request.screen, preSnapshot: preSnapshot
            ) {
@@ -1793,10 +1793,6 @@ extension OverlayWindowController: SelectionViewDelegate {
         let shouldApplyWindowEffects = request.isWindowSelection && windowBaseImage != nil
 
         switch postCaptureAction {
-        case .edit where hangsWithoutEditing:
-            if !hangWithoutEditing(request, preSnapshot: preSnapshot, windowBaseImage: windowBaseImage) {
-                fallthrough
-            }
         case .edit:
             showEditor(
                 captureRect: request.captureRect,
@@ -1816,33 +1812,6 @@ extension OverlayWindowController: SelectionViewDelegate {
             onComplete(nil)
             onRecordingSelection?(request.screenRect, request.screen)
         }
-    }
-
-    /// A new capture, not an image opened for editing, when "Hang captures
-    /// without editing" is on in the line's menu.
-    private var hangsWithoutEditing: Bool {
-        LineSettings.hangsCapturesWithoutEditing && presetImage == nil && suspendedDraft == nil
-    }
-
-    /// Skips the editor: the selection goes straight to `onComplete`, which
-    /// copies it and hangs it on the line. Press and hold it there to mark it
-    /// up later. Returns false when there is no image yet, so the caller
-    /// opens the editor as usual.
-    private func hangWithoutEditing(
-        _ request: PendingSelection,
-        preSnapshot: CGImage?,
-        windowBaseImage: NSImage?
-    ) -> Bool {
-        guard let image = imageForImmediateAction(
-            captureRect: request.captureRect,
-            screen: request.screen,
-            preSnapshot: preSnapshot,
-            windowBaseImage: windowBaseImage
-        ) else { return false }
-        tearDown()
-        onComplete(image)
-        onRequestFocusReturn?()
-        return true
     }
 
     private func completeImmediateAction(

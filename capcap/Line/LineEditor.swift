@@ -7,19 +7,6 @@ func L(_ english: String) -> String {
     Localizer.string(english, table: "Line")
 }
 
-/// The line's settings that capcap's capture flow reads.
-enum LineSettings {
-    private static let hangsWithoutEditingKey = "lineHangsCapturesWithoutEditing"
-
-    /// On: a capcap capture hangs on the line as soon as the area is chosen,
-    /// with no editor; press and hold it there to mark it up. Off: capcap's
-    /// toolbar opens first, as before. On unless turned off.
-    static var hangsCapturesWithoutEditing: Bool {
-        get { UserDefaults.standard.object(forKey: hangsWithoutEditingKey) as? Bool ?? true }
-        set { UserDefaults.standard.set(newValue, forKey: hangsWithoutEditingKey) }
-    }
-}
-
 /// Press and hold on a photo opens it in capcap's own annotation editor, in
 /// place of the system Markup editor Tendedero used. Confirming the edit
 /// writes the result back over the file on the line, so the photo there
