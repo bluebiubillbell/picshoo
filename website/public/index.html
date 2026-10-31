@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Picshoo · Screenshots, on the line</title>
+  <meta name="description" content="Picshoo is a free Mac app that hangs every screenshot on a line along the top of your screen. Click to copy, drag to send, hold to mark it up in capcap's editor">
+  <meta property="og:title" content="Picshoo · Screenshots, on the line">
+  <meta property="og:description" content="Every capture hangs on a line along the top of your screen. Hold one to mark it up in capcap's editor">
+  <meta property="og:image" content="https://picshoo.bingyu.uno/img/icon.png">
+  <meta name="theme-color" content="#f4f7fd">
+  <link rel="icon" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/img/icon.png">
+  <link rel="stylesheet" href="/app.css">
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+
+<!-- For readers that don't run the desktop -->
+<div class="visually-hidden">
+  <h1>Picshoo: screenshots, on the line</h1>
+  <p>Picshoo is a free Mac app for macOS 14 or later that hangs every screenshot on a line along the top of your screen. Click a photo to copy it, drag it into an app or a folder, hold it to mark it up in capcap's editor, or click its cross to let it go. Double-tap ⌘ to capture. It also brings capcap's scrolling capture, beautify, pin to screen, text recognition, translation, history and image-host upload</p>
+  <p>Picshoo is stitched together from two MIT-licensed apps, capcap by realskyrin and Tendedero by Alejandro Buján</p>
+  <p><a href="/download">Download Picshoo for Mac</a></p>
+</div>
+
+<!-- The desktop. Everything in #stage is what a screenshot can see;
+     .no-capture marks the capture chrome that stays out of it -->
+<div class="stage" id="stage">
+  <div class="wallpaper"></div>
+
+  <!-- A 1440 × 900 desktop, scaled to fit the window -->
+  <div class="scene" id="scene">
+    <main class="hero">
+      <img class="hero__icon" src="/img/icon.png" alt="" width="76" height="76">
+      <h1 class="hero__title"><span data-i18n="h1a">Screenshots,</span><span class="hero__grad" data-i18n="h1b">on the line</span></h1>
+      <p class="hero__sub" data-i18n="lede">Every screenshot hangs on a line just above your screen. Hold one to mark it up in capcap's editor</p>
+      <div class="hero__cta">
+        <a class="pill pill--primary" href="/download">
+          <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M10 3v10m-4.5-4.5L10 13l4.5-4.5M4 16.5h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="btnDownload">Download for Mac</span>
+          <span class="pill__count" id="versionPill">Free</span>
+        </a>
+        <button class="pill pill--glass" type="button" data-open="readme"><span data-i18n="btnReadme">Read me</span></button>
+      </div>
+      <div class="cmd">
+        <code>xattr -dr com.apple.quarantine /Applications/Picshoo.app</code>
+        <button class="cmd__copy" type="button" data-copy="xattr -dr com.apple.quarantine /Applications/Picshoo.app" aria-label="Copy">
+          <svg viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><rect x="6.5" y="6.5" width="10" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 4.5a1 1 0 0 0-1-1h-8a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+      </div>
+      <p class="hero__meta" id="meta">Free and MIT licensed · macOS 14 or later · Apple silicon and Intel</p>
+      <div class="chips" id="chips"></div>
+      <div class="badges">
+        <a class="badge-card" href="https://github.com/realskyrin/capcap" target="_blank" rel="noopener">
+          <span class="badge-card__k" data-i18n="badge1k">Editor from</span><span class="badge-card__v">capcap · realskyrin</span>
+        </a>
+        <a class="badge-card" href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener">
+          <span class="badge-card__k" data-i18n="badge2k">Line from</span><span class="badge-card__v">Tendedero · Alejandro Buján</span>
+        </a>
+      </div>
+    </main>
+
+    <button class="file" type="button" style="left:1236px;top:254px" data-open="readme" data-window>
+      <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+        <defs><linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f1f3f7"/></linearGradient></defs>
+        <path d="M14 4h26l12 12v42a2 2 0 0 1-2 2H14a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="url(#paper)" stroke="rgba(0,0,0,.14)"/>
+        <path d="M40 4v10a2 2 0 0 0 2 2h10" fill="#e6e9ef" stroke="rgba(0,0,0,.14)"/>
+        <path d="M20 26h24M20 32h24M20 38h24M20 44h16" stroke="#9aa3b2" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="file__label" data-i18n="fileReadme">Read me.txt</span>
+    </button>
+    <button class="file" type="button" style="left:1336px;top:254px" id="keepersIcon" data-drop="keepers" data-window>
+      <svg viewBox="-6 -2 76 58" width="72" height="56" aria-hidden="true">
+        <defs>
+          <linearGradient id="folderBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb6f2"/><stop offset="1" stop-color="#3d97e0"/></linearGradient>
+          <linearGradient id="folderFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ed0fb"/><stop offset="1" stop-color="#5cb4f3"/></linearGradient>
+        </defs>
+        <path d="M2 10a4 4 0 0 1 4-4h16l5 5h31a4 4 0 0 1 4 4v31a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z" fill="url(#folderBack)"/>
+        <path d="M0 19a4 4 0 0 1 4-4h56a4 4 0 0 1 4 4v27a5 5 0 0 1-5 5H5a5 5 0 0 1-5-5z" fill="url(#folderFront)"/>
+        <path d="M1 19.5A3.5 3.5 0 0 1 4.5 16h55a3.5 3.5 0 0 1 3.5 3.5" stroke="rgba(255,255,255,.75)" fill="none"/>
+      </svg>
+      <span class="file__label">Keepers</span>
+      <span class="file__sub" id="keepersCount"></span>
+    </button>
+
+    <!-- Windows open at start, one for each app in the Dock -->
+    <section class="win" data-id="report" data-window style="left:36px;top:266px;width:420px">
+      <header class="win__bar"><span class="lights"><i class="l-close"></i><i></i><i></i></span><span class="win__title" data-i18n="winReport">Weekly Report</span></header>
+      <div class="report">
+        <h3 data-i18n="reportTitle">Captures this week</h3>
+        <p class="report__sub" data-i18n="reportSub">October 25 – 31</p>
+        <div class="report__tiles">
+          <div><span data-i18n="statCaptured">Captured</span><b>186</b><em>+9%</em></div>
+          <div><span data-i18n="statMarked">Marked up</span><b>42</b><em>+15</em></div>
+          <div><span data-i18n="statSent">Sent</span><b>97</b><em>+23%</em></div>
+        </div>
+        <svg class="report__chart" viewBox="0 0 380 78" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#001489" stop-opacity=".22"/><stop offset="1" stop-color="#001489" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0 58 C30 54 45 46 63 48 S100 62 127 52 S165 30 190 36 S228 50 253 40 S292 22 317 26 S355 14 376 8 L376 78 L0 78 Z" fill="url(#chartFill)"/>
+          <path d="M0 58 C30 54 45 46 63 48 S100 62 127 52 S165 30 190 36 S228 50 253 40 S292 22 317 26 S355 14 376 8" fill="none" stroke="#001489" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="376" cy="8" r="4" fill="#fff" stroke="#001489" stroke-width="2.4"/>
+        </svg>
+        <div class="report__days" id="days"></div>
+      </div>
+    </section>
+
+    <section class="win" data-id="notes" data-window data-drop="notes" style="left:128px;top:516px;width:302px">
+      <header class="win__bar"><span class="lights"><i class="l-close"></i><i></i><i></i></span><span class="win__title" data-i18n="winNotes">How it works</span></header>
+      <div class="notes">
+        <h3 data-i18n="notesTitle">On the line</h3>
+        <ul>
+          <li style="--dot:#001489" data-i18n="n1">Click a photo to copy it</li>
+          <li style="--dot:#2f5bd3" data-i18n="n2">Hold it to mark it up in capcap</li>
+          <li style="--dot:#4f86f7" data-i18n="n3">Drag it to Ling, Keepers or the Trash</li>
+          <li style="--dot:#7fb0ff" data-i18n="n4">Click its cross to let it go</li>
+          <li style="--dot:#a9c8ff" data-i18n="n5">Double-tap ⌘ to take one</li>
+        </ul>
+        <div class="notes__imgs"></div>
+      </div>
+    </section>
+
+    <section class="win" data-id="chat" data-window data-drop="chat" style="left:1064px;top:378px;width:336px">
+      <header class="win__bar"><span class="lights"><i class="l-close"></i><i></i><i></i></span><span class="win__title">Ling</span></header>
+      <div class="chat">
+        <div class="chat__log" id="chatLog">
+          <p class="chat__time" id="chatTime"></p>
+          <div class="bubble bubble--in" data-i18n="c1">Morning! Is the new layout done?</div>
+          <div class="bubble bubble--out" data-i18n="c2">Almost, it looks much cleaner</div>
+          <div class="bubble bubble--in" data-i18n="c3">Can you circle the part you changed?</div>
+          <div class="bubble bubble--out" data-i18n="c4">Marking up a screenshot for you now</div>
+        </div>
+        <div class="chat__input" data-i18n="cInput">Message</div>
+      </div>
+    </section>
+  </div>
+
+  <header class="menubar" id="menubar">
+    <nav class="mb-left">
+      <span class="mb-item mb-app">Picshoo</span>
+      <span class="mb-item" data-i18n="menuFile">File</span>
+      <span class="mb-item" data-i18n="menuEdit">Edit</span>
+      <span class="mb-item" data-i18n="menuView">View</span>
+      <span class="mb-item" data-i18n="menuHelp">Help</span>
+    </nav>
+    <div class="mb-right">
+      <button class="mb-item mb-icon" id="statusBtn" type="button" aria-label="Picshoo menu"><img src="/img/mark-black.png" alt="" width="18" height="18"></button>
+      <span class="mb-item mb-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="M12 18.6a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm-4.2-4.4a6 6 0 0 1 8.4 0l1.3-1.3a7.8 7.8 0 0 0-11 0l1.3 1.3Zm-2.9-2.9a10 10 0 0 1 14.2 0l1.3-1.3a11.9 11.9 0 0 0-16.8 0l1.3 1.3Z"/></svg></span>
+      <span class="mb-item mb-icon mb-battery" aria-hidden="true"><i></i></span>
+      <span class="mb-item" id="clock"></span>
+    </div>
+  </header>
+
+  <div class="line" id="line">
+    <svg class="line__rope" id="rope" aria-hidden="true"></svg>
+    <p class="line__hint glass" data-i18n="lineEmpty">Take a screenshot and it hangs here</p>
+    <div class="line__photos" id="photos"></div>
+  </div>
+
+  <div class="toolbar glass no-capture" id="toolbar">
+    <button type="button" data-mode="screen">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M7 16.8h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span data-i18n="capScreen">Screen</span>
+    </button>
+    <button type="button" data-mode="window">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><rect x="2.5" y="4" width="15" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.5 7.5h15" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span data-i18n="capWindow">Window</span>
+    </button>
+    <button type="button" data-mode="selection" class="primary">
+      <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M3 7V4a1 1 0 0 1 1-1h3M13 3h3a1 1 0 0 1 1 1v3M17 13v3a1 1 0 0 1-1 1h-3M7 17H4a1 1 0 0 1-1-1v-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 7.5v5M7.5 10h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span data-i18n="capSelection">Selection</span>
+    </button>
+  </div>
+
+  <nav class="dock glass" id="dock" data-window>
+    <button class="dock-app" type="button" data-app="report">
+      <svg viewBox="0 0 58 58" aria-hidden="true"><rect width="58" height="58" rx="13" fill="#fff"/><rect x="12" y="30" width="7" height="16" rx="2" fill="#7fa2ff"/><rect x="21.5" y="22" width="7" height="24" rx="2" fill="#4f78f0"/><rect x="31" y="26" width="7" height="20" rx="2" fill="#2a4fd6"/><rect x="40.5" y="13" width="7" height="33" rx="2" fill="#001489"/></svg>
+      <span class="dock-app__label" data-i18n="winReport">Weekly Report</span><i class="dot"></i>
+    </button>
+    <button class="dock-app" type="button" data-app="notes" data-drop="notes">
+      <svg viewBox="0 0 58 58" aria-hidden="true"><defs><linearGradient id="notesTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd84a"/><stop offset="1" stop-color="#f7c21a"/></linearGradient></defs><rect width="58" height="58" rx="13" fill="#fdfcf7"/><path d="M0 13A13 13 0 0 1 13 0h32a13 13 0 0 1 13 13v5H0z" fill="url(#notesTop)"/><path d="M10 28h38M10 36h38M10 44h26" stroke="#d9d4c6" stroke-width="1.6"/><path d="M8 18h42" stroke="#e8b40f"/></svg>
+      <span class="dock-app__label" data-i18n="appNotes">Notes</span><i class="dot"></i>
+    </button>
+    <button class="dock-app" type="button" data-app="chat" data-drop="chat">
+      <svg viewBox="0 0 58 58" aria-hidden="true"><defs><linearGradient id="msgBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6ee36f"/><stop offset="1" stop-color="#2fbf3a"/></linearGradient></defs><rect width="58" height="58" rx="13" fill="url(#msgBg)"/><path d="M29 13c-10.5 0-19 6.9-19 15.4 0 4.6 2.5 8.7 6.4 11.5-.4 2.6-1.9 5-3.6 6.6 3.4 0 6.6-1.3 8.8-3.1 2.3.8 4.8 1.2 7.4 1.2 10.5 0 19-6.9 19-15.4S39.5 13 29 13z" fill="#fff"/></svg>
+      <span class="dock-app__label" data-i18n="appChat">Messages</span><i class="dot"></i>
+    </button>
+    <span class="dock__sep"></span>
+    <button class="dock-app dock-app--keepers" type="button" data-app="keepers" data-drop="keepers">
+      <!-- Its own gradients: the desktop folder's are hidden along with it on a phone -->
+      <svg viewBox="-3 -3 70 64" aria-hidden="true"><defs><linearGradient id="dockFolderBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb6f2"/><stop offset="1" stop-color="#3d97e0"/></linearGradient><linearGradient id="dockFolderFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ed0fb"/><stop offset="1" stop-color="#5cb4f3"/></linearGradient></defs><path d="M2 10a4 4 0 0 1 4-4h16l5 5h31a4 4 0 0 1 4 4v31a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4z" fill="url(#dockFolderBack)"/><path d="M0 19a4 4 0 0 1 4-4h56a4 4 0 0 1 4 4v27a5 5 0 0 1-5 5H5a5 5 0 0 1-5-5z" fill="url(#dockFolderFront)"/></svg>
+      <span class="dock-app__label">Keepers</span><i class="dot"></i>
+    </button>
+    <button class="dock-app" type="button" data-app="trash" data-drop="trash" id="trashIcon">
+      <svg viewBox="0 0 58 58" aria-hidden="true"><defs><linearGradient id="binBody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d9dde3"/><stop offset=".5" stop-color="#f4f6f8"/><stop offset="1" stop-color="#cfd4db"/></linearGradient></defs><path class="trash-papers" d="M18 14l9-5 6 6-8 4zM30 11l10 1-2 7-8-1z" fill="#fff" stroke="rgba(0,0,0,.18)"/><ellipse cx="29" cy="15" rx="17" ry="3.6" fill="#c3c8cf" stroke="rgba(0,0,0,.15)"/><path d="M12 15h34l-3.4 34.5a4 4 0 0 1-4 3.5H19.4a4 4 0 0 1-4-3.5z" fill="url(#binBody)" stroke="rgba(0,0,0,.15)"/><path d="M22 21l1.4 26M29 21v26M36 21l-1.4 26" stroke="rgba(0,0,0,.12)" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span class="dock-app__label" data-i18n="appTrash">Trash</span>
+    </button>
+  </nav>
+
+  <footer class="credit">
+    <span data-i18n="credit">Designed and built by Bingyu</span><span>·</span>
+    <span data-i18n="mit">MIT License</span><span>·</span>
+    <a href="https://github.com/realskyrin/capcap" target="_blank" rel="noopener">capcap</a><span>·</span>
+    <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener">Tendedero</a><span>·</span>
+    <a href="https://woo.bingyu.uno" target="_blank" rel="noopener">Woo</a>
+  </footer>
+  <nav class="langs">
+    <button type="button" data-lang="en">English</button>
+    <button type="button" data-lang="zh">简体中文</button>
+  </nav>
+
+  <div class="menu glass no-capture" id="statusMenu" hidden>
+    <button type="button" data-cmd="line"><span id="menuLine" data-i18n="menuHide">Hide line</span><kbd>⌃⌥T</kbd></button>
+    <button type="button" data-cmd="clear"><span data-i18n="menuClear">Take everything down</span></button>
+    <hr>
+    <button type="button" data-cmd="readme"><span data-i18n="menuReadme">Read me</span></button>
+    <a href="/download"><span data-i18n="btnDownload">Download for Mac</span></a>
+  </div>
+  <div class="coach glass no-capture" id="tour" hidden>
+    <span class="coach__step" id="tourStep"></span>
+    <p class="coach__text" id="tourText"></p>
+    <button class="coach__skip" id="tourClose" type="button" aria-label="Close">✕</button>
+  </div>
+  <div class="shade no-capture" id="shade" hidden>
+    <div class="shade__rect" id="sel"><span class="shade__size" id="selSize"></span></div>
+    <div class="shade__hint glass"><span id="shadeHint"></span><button type="button" id="shadeCancel" data-i18n="cancel">Cancel</button></div>
+  </div>
+  <div class="toasts no-capture" id="toasts"></div>
+</div>
+
+</body>
+</html>

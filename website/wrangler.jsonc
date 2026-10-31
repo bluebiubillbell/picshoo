@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/wrangler@4/config-schema.json",
+  "name": "picshoo",
+  "compatibility_date": "2026-10-01",
+  "routes": [
+    { "pattern": "picshoo.bingyu.uno", "custom_domain": true }
+  ],
+  // A static site. The app's zip is well under the 25 MiB asset ceiling, so
+  // it ships as an asset too; deploy.sh fetches it from the latest release
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page"
+  }
+}
