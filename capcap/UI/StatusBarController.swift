@@ -147,7 +147,7 @@ class StatusBarController: NSObject {
 
     private static func statusBarIcon() -> NSImage {
         let size = NSSize(width: 20, height: 20)
-        // Picshoo's mark, drawn from logo_updated/2.png by scripts/make-icons.swift.
+        // Picshoo's mark, drawn from menu.png by scripts/make-icons.swift.
         if let image = Bundle.main.image(forResource: "MenuBarIcon") {
             image.size = size
             image.isTemplate = true

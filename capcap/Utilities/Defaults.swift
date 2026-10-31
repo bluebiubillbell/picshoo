@@ -2462,7 +2462,8 @@ struct Defaults {
     static var showMenuBar: Bool {
         get {
             if defaults.object(forKey: "showMenuBar") == nil {
-                return false
+                // The line's settings live in this menu, so it shows by default.
+                return true
             }
             return defaults.bool(forKey: "showMenuBar")
         }

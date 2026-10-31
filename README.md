@@ -1,4 +1,4 @@
-<p align="center"><img src="logo_updated/1.png" width="128" alt="Picshoo"></p>
+<p align="center"><img src="menu.png" width="128" alt="Picshoo"></p>
 
 <h1 align="center">Picshoo</h1>
 
@@ -45,7 +45,7 @@ bash scripts/bundle.sh            # 输出 build/Picshoo.app
 bash scripts/rebuild-and-open.sh  # 编译、安装到 /Applications 并打开
 ```
 
-图标由 `logo_updated/` 里的图生成：
+图标（App 和菜单栏）都由 `menu.png` 生成：
 
 ```bash
 swift scripts/make-icons.swift . && iconutil -c icns build/AppIcon.iconset -o Resources/AppIcon.icns
