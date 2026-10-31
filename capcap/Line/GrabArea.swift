@@ -32,7 +32,9 @@ struct GrabArea: NSViewRepresentable {
         view.url = item.url
         view.dragImage = item.thumb
         view.onClick = { line.copy(id) }
-        view.onDoubleClick = { line.open(id) }
+        // A photo opens in capcap's editor rather than Preview. A recording
+        // still opens in its own app, since the editor does not play video.
+        view.onDoubleClick = { isRecording ? line.open(id) : line.markup(id) }
         view.onDragStart = { line.draggingID = id }
         view.onDragEnd = {
             line.draggingID = nil
