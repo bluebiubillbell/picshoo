@@ -2462,7 +2462,7 @@ struct Defaults {
     static var showMenuBar: Bool {
         get {
             if defaults.object(forKey: "showMenuBar") == nil {
-                return true
+                return false
             }
             return defaults.bool(forKey: "showMenuBar")
         }

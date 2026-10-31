@@ -37,7 +37,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if appInitialized {
             flushPendingOpenImageURLs()
-        } else if LaunchAtLogin.isEnabled && AppPermissions.allRequiredGranted {
+        } else if AppPermissions.allRequiredGranted {
+            // With every permission already granted there is nothing for the
+            // startup dialog to ask, so the app starts straight away.
             initializeApp()
             flushPendingOpenImageURLs()
         } else if !pendingOpenImageURLs.isEmpty {

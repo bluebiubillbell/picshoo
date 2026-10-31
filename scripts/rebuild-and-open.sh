@@ -37,7 +37,9 @@ fi
 INSTALLED_APP="/Applications/$APP_NAME.app"
 echo "==> [3/4] Installing to $INSTALLED_APP..."
 rm -rf "$INSTALLED_APP"
-cp -R "$APP_BUNDLE" "$INSTALLED_APP"
+# Leaves behind the Finder info iCloud adds in the build folder, which would
+# otherwise break the installed app's signature.
+ditto --norsrc --noextattr "$APP_BUNDLE" "$INSTALLED_APP"
 LSREGISTER="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister"
 if [ -x "$LSREGISTER" ]; then
     "$LSREGISTER" -f "$INSTALLED_APP" || true

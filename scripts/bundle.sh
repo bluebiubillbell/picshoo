@@ -158,17 +158,32 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SIGN_IDENTITY="${SIGN_IDENTITY:-Picshoo Self-Signed}"
 sign_bundles() {
     local identity="$1"
-    # codesign refuses files carrying Finder info or resource forks.
-    xattr -cr "$APP_DIR"
+    # codesign refuses files carrying Finder info or resource forks, and an
+    # iCloud-synced folder such as the Desktop keeps adding them to the bundle.
+    # Signing happens on a clean copy outside it, which is then moved back.
+    local stage
+    stage="$(mktemp -d)"
+    ditto --norsrc --noextattr "$APP_DIR" "$stage/$APP_NAME"
     codesign --force --entitlements "$SCRIPT_DIR/capcap-share-extension.entitlements" \
-        --sign "$identity" "$EXTENSION_DIR"
+        --sign "$identity" "$stage/$APP_NAME/Contents/PlugIns/$EXTENSION_NAME"
     codesign --force --entitlements "$SCRIPT_DIR/capcap.entitlements" \
-        --sign "$identity" "$APP_DIR"
+        --sign "$identity" "$stage/$APP_NAME"
+    rm -rf "$APP_DIR"
+    ditto --norsrc --noextattr "$stage/$APP_NAME" "$APP_DIR"
+    rm -rf "$stage"
 }
+
+# An Apple Development certificate is just as stable for local builds, so it
+# is used when the self-signed one has not been imported.
+DEV_IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null \
+    | awk '/"Apple Development:/ { print $2; exit }')"
 
 if security find-identity -p codesigning 2>/dev/null | grep -qF "$SIGN_IDENTITY"; then
     echo "Signing with: $SIGN_IDENTITY"
     sign_bundles "$SIGN_IDENTITY"
+elif [ -n "$DEV_IDENTITY" ]; then
+    echo "Signing with Apple Development identity: $DEV_IDENTITY"
+    sign_bundles "$DEV_IDENTITY"
 else
     echo "warning: '$SIGN_IDENTITY' not found in keychain — falling back to ad-hoc signing." >&2
     echo "warning: TCC permissions won't match released builds until you import capcap-signing.p12." >&2
