@@ -4,6 +4,8 @@
 
 <p align="center">截图挂在屏幕顶部的晾衣绳上，要标注时长按打开 capcap 的编辑器。</p>
 
+<p align="center"><a href="https://picshoo.bingyu.uno">picshoo.bingyu.uno</a></p>
+
 Picshoo 由两个 MIT 开源项目拼接而成，界面用 Woo 的风格：
 
 - [capcap](https://github.com/realskyrin/capcap)：双击 ⌘ 截图、长截图、标注编辑器、美化、钉图、OCR 等。

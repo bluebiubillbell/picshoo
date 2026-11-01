@@ -443,7 +443,7 @@ button.mb-item:hover, .mb-item.is-open { background: var(--hover); }
 .chat__time { margin: 0 0 4px; text-align: center; font-family: var(--font-sys); font-size: 10.5px; color: var(--ink-3); }
 .bubble { max-width: 74%; padding: 7px 12px; border-radius: 17px; font-size: 13px; line-height: 1.32; }
 .bubble--in { align-self: flex-start; background: #e9e9eb; color: var(--ink); }
-.bubble--out { align-self: flex-end; background: var(--blue); color: #fff; }
+.bubble--out { align-self: flex-end; background: #007aff; color: #fff; }
 .bubble--img { padding: 0; background: none; overflow: hidden; border-radius: 14px; }
 .bubble--img img { display: block; max-width: 100%; max-height: 150px; }
 .chat__input { margin: 6px 12px 12px; height: 30px; display: flex; align-items: center; padding: 0 12px; border-radius: 15px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); font-size: 13px; color: var(--ink-3); }
@@ -521,7 +521,7 @@ button.mb-item:hover, .mb-item.is-open { background: var(--hover); }
   border-radius: 24px;
 }
 .dock-app { position: relative; width: 58px; height: 58px; border-radius: 14px; transition: transform 0.25s var(--ease-spring); cursor: pointer; }
-.dock-app svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.18)); }
+.dock-app svg, .dock-app img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.18)); }
 .dock-app:hover { transform: translateY(-4px) scale(1.06); }
 .dock-app.is-over { transform: translateY(-6px) scale(1.12); }
 .dock-app.is-bump { animation: bump 0.6s var(--ease-out); }
@@ -546,8 +546,8 @@ button.mb-item:hover, .mb-item.is-open { background: var(--hover); }
 .dock-app:hover .dock-app__label { opacity: 1; }
 .dock-app--keepers { display: none; }
 .dock__sep { width: 1px; height: 46px; background: var(--separator); }
-.trash-papers { display: none; }
-#trashIcon.is-full .trash-papers { display: block; }
+#trashIcon .trash-full, #trashIcon.is-full .trash-empty { display: none; }
+#trashIcon.is-full .trash-full { display: block; }
 
 /* ----- footer ----- */
 .credit, .langs {

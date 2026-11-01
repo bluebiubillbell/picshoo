@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #
-# Deploys picshoo.bingyu.uno. The repository is private, so GitHub's release
-# links 404 for visitors: this copies the latest release's Picshoo.zip into
+# Deploys picshoo.bingyu.uno. Copies the latest release's Picshoo.zip into
 # the site and serves it at /download.
 #
 #   bash website/deploy.sh
