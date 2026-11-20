@@ -246,7 +246,6 @@ enum L10n {
     static var uploadFilesMenu: String { s("uploadFilesMenu") }
     static var colorPicker: String { s("colorPicker") }
     static var takePhoto: String { s("takePhoto") }
-    static var cameraHint: String { s("cameraHint") }
     static var cameraUnavailable: String { s("cameraUnavailable") }
     static var cameraDeniedTitle: String { s("cameraDeniedTitle") }
     static var cameraDeniedMessage: String { s("cameraDeniedMessage") }

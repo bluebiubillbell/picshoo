@@ -111,7 +111,6 @@
 "record" = "Запись";
 "colorPicker" = "Пипетка";
 "takePhoto" = "Сделать фото";
-"cameraHint" = "Пробел или Return — снимок, Esc — отмена";
 "cameraUnavailable" = "Камера не найдена";
 "cameraDeniedTitle" = "Доступ к камере выключен";
 "cameraDeniedMessage" = "Picshoo нужна камера, чтобы делать фото. Включите доступ в Системных настройках";

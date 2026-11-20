@@ -111,7 +111,6 @@
 "record" = "錄製";
 "colorPicker" = "取色器";
 "takePhoto" = "拍照";
-"cameraHint" = "空白鍵或 Return 拍照，Esc 取消";
 "cameraUnavailable" = "找不到相機";
 "cameraDeniedTitle" = "相機權限已關閉";
 "cameraDeniedMessage" = "Picshoo 需要使用相機拍照，請在系統設定中開啟";

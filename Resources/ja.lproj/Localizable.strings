@@ -111,7 +111,6 @@
 "record" = "録画";
 "colorPicker" = "カラーピッカー";
 "takePhoto" = "写真を撮る";
-"cameraHint" = "スペースかReturnで撮影、Escでキャンセル";
 "cameraUnavailable" = "カメラが見つかりません";
 "cameraDeniedTitle" = "カメラへのアクセスがオフです";
 "cameraDeniedMessage" = "Picshoo で写真を撮るにはカメラが必要です。システム設定でオンにしてください";

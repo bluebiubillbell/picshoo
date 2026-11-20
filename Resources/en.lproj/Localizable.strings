@@ -111,7 +111,6 @@
 "record" = "Record";
 "colorPicker" = "Color Picker";
 "takePhoto" = "Take Photo";
-"cameraHint" = "Space or Return to take, Esc to cancel";
 "cameraUnavailable" = "No camera found";
 "cameraDeniedTitle" = "Camera access is off";
 "cameraDeniedMessage" = "Picshoo needs the camera to take photos. Turn it on in System Settings";

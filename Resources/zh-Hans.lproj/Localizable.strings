@@ -111,7 +111,6 @@
 "record" = "录制";
 "colorPicker" = "取色器";
 "takePhoto" = "拍照";
-"cameraHint" = "空格或回车拍照，Esc 取消";
 "cameraUnavailable" = "未找到摄像头";
 "cameraDeniedTitle" = "摄像头权限已关闭";
 "cameraDeniedMessage" = "Picshoo 需要使用摄像头拍照，请在系统设置中开启";

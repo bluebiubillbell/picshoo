@@ -111,7 +111,6 @@
 "record" = "Ghi màn hình";
 "colorPicker" = "Chọn màu";
 "takePhoto" = "Chụp ảnh";
-"cameraHint" = "Space hoặc Return để chụp, Esc để hủy";
 "cameraUnavailable" = "Không tìm thấy camera";
 "cameraDeniedTitle" = "Quyền truy cập camera đang tắt";
 "cameraDeniedMessage" = "Picshoo cần camera để chụp ảnh. Hãy bật trong Cài đặt hệ thống";

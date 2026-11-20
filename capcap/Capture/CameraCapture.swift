@@ -265,16 +265,6 @@ private final class CameraPanel: NSPanel {
         close.action = #selector(closeClicked)
         root.addSubview(close)
 
-        let hint = NSTextField(labelWithString: L10n.cameraHint)
-        hint.font = WooTheme.font(ofSize: 11)
-        hint.textColor = WooTheme.muted
-        hint.alignment = .right
-        hint.lineBreakMode = .byTruncatingTail
-        let hintWidth = size.width / 2 - 24 - 12 - Self.inset - 6
-        hint.frame = NSRect(x: size.width - Self.inset - 6 - hintWidth, y: (Self.barHeight - 16) / 2,
-                            width: hintWidth, height: 16)
-        root.addSubview(hint)
-
         initialFirstResponder = root
     }
 

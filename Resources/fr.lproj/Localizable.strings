@@ -111,7 +111,6 @@
 "record" = "Enregistrer";
 "colorPicker" = "Pipette";
 "takePhoto" = "Prendre une photo";
-"cameraHint" = "Espace ou Retour pour prendre, Échap pour annuler";
 "cameraUnavailable" = "Aucune caméra trouvée";
 "cameraDeniedTitle" = "L'accès à la caméra est désactivé";
 "cameraDeniedMessage" = "Picshoo a besoin de la caméra pour prendre des photos. Activez-la dans les Réglages Système";
