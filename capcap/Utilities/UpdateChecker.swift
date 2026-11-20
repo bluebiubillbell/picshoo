@@ -29,19 +29,19 @@ extension Notification.Name {
 /// Checks GitHub Releases for a newer capcap version and, when asked, downloads
 /// and installs it in place.
 ///
-/// The release zip is signed with capcap's reusable self-signed certificate
-/// (see release.yml), so an in-place swap keeps a stable code-signing identity
-/// and the user's TCC permissions survive the update. `UpdateInstaller` does
+/// Every release zip is signed with the same identity, so an in-place swap
+/// keeps a stable code-signing identity and the user's TCC permissions
+/// survive the update. `UpdateInstaller` does
 /// the download/unzip/swap; this type owns the state machine and the GitHub
 /// API parsing.
 final class UpdateChecker {
     static let shared = UpdateChecker()
 
-    /// Off in Picshoo. The checker points at capcap's releases, and
-    /// installing one would swap this merged app for plain capcap.
-    static let isEnabled = false
+    /// Picshoo's own releases. The installer only swaps in an app with
+    /// Picshoo's bundle identifier.
+    static let isEnabled = true
 
-    private let repo = "realskyrin/capcap"
+    private let repo = "bluebiubillbell/picshoo"
     private let throttleKey = "lastUpdateCheckAt"
     private let skippedVersionKey = "skippedUpdateVersion"
     private let shortcutTriggerDayKey = "automaticUpdateCheckShortcutTriggerDay"
@@ -94,7 +94,6 @@ final class UpdateChecker {
     /// first screenshot-shortcut trigger of each local day checks GitHub unless
     /// a check already ran today.
     func checkFromScreenshotShortcutIfDue() {
-        // Picshoo is not capcap: its releases must never replace this app.
         guard Self.isEnabled else { return }
         let today = Self.dayKey(for: Date())
         let defaults = UserDefaults.standard

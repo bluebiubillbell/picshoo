@@ -1725,7 +1725,6 @@ class SettingsView: NSView {
         infoCard.addSubview(infoInner)
         pin(infoInner, to: infoCard, insets: NSEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
 
-        // Updates stay off until Picshoo publishes releases of its own.
         if UpdateChecker.isEnabled {
             let updateRow = makeUpdateRow()
             infoInner.addArrangedSubview(updateRow)

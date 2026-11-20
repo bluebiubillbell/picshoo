@@ -104,6 +104,12 @@ final class UpdateInstaller: NSObject {
         guard fm.fileExists(atPath: newApp.appendingPathComponent("Contents/MacOS").path) else {
             throw InstallError.bundleNotFound
         }
+        // Only ever replace this app with itself: a release of another app
+        // (capcap, say) must never take its place.
+        guard let newID = Bundle(url: newApp)?.bundleIdentifier,
+              newID == Bundle.main.bundleIdentifier else {
+            throw InstallError.bundleNotFound
+        }
         // Strip quarantine so Gatekeeper doesn't block the relaunch.
         _ = try? runProcess("/usr/bin/xattr",
                             ["-dr", "com.apple.quarantine", newApp.path],
