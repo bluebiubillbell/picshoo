@@ -8,7 +8,6 @@ class StatusBarController: NSObject {
     private let onMergeImages: () -> Void
     private let onUploadFiles: () -> Void
     private let onColorPicker: () -> Void
-    private let onOpenHistoryPanel: () -> Void
     private let onOpenSettings: () -> Void
 
     init(
@@ -18,7 +17,6 @@ class StatusBarController: NSObject {
         onMergeImages: @escaping () -> Void,
         onUploadFiles: @escaping () -> Void,
         onColorPicker: @escaping () -> Void,
-        onOpenHistoryPanel: @escaping () -> Void,
         onOpenSettings: @escaping () -> Void
     ) {
         self.onTakeScreenshot = onTakeScreenshot
@@ -27,7 +25,6 @@ class StatusBarController: NSObject {
         self.onMergeImages = onMergeImages
         self.onUploadFiles = onUploadFiles
         self.onColorPicker = onColorPicker
-        self.onOpenHistoryPanel = onOpenHistoryPanel
         self.onOpenSettings = onOpenSettings
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -44,12 +41,6 @@ class StatusBarController: NSObject {
         setupMenu()
 
         NotificationCenter.default.addObserver(forName: .languageDidChange, object: nil, queue: .main) { [weak self] _ in
-            self?.setupMenu()
-        }
-        NotificationCenter.default.addObserver(forName: .historyCacheEnabledDidChange, object: nil, queue: .main) { [weak self] _ in
-            self?.setupMenu()
-        }
-        NotificationCenter.default.addObserver(forName: .clipboardTextCacheEnabledDidChange, object: nil, queue: .main) { [weak self] _ in
             self?.setupMenu()
         }
         NotificationCenter.default.addObserver(forName: .hotkeyDidChange, object: nil, queue: .main) { [weak self] _ in
@@ -105,16 +96,6 @@ class StatusBarController: NSObject {
         menu.addItem(colorPickerItem)
 
         menu.addItem(NSMenuItem.separator())
-
-        if Defaults.isHistoryCacheAvailable {
-            let historyPanelItem = NSMenuItem(title: L10n.historyPanelMenu, action: #selector(openHistoryPanel), keyEquivalent: "")
-            historyPanelItem.target = self
-            historyPanelItem.image = Self.menuIcon(systemName: "rectangle.stack")
-            HotkeyManager.applyHistoryPanelToMenuItem(historyPanelItem)
-            menu.addItem(historyPanelItem)
-
-            menu.addItem(NSMenuItem.separator())
-        }
 
         menu.addItem(MainActor.assumeIsolated { LineController.shared.makeMenuItem() })
         menu.addItem(NSMenuItem.separator())
@@ -193,10 +174,6 @@ class StatusBarController: NSObject {
 
     @objc private func openSettings() {
         onOpenSettings()
-    }
-
-    @objc private func openHistoryPanel() {
-        onOpenHistoryPanel()
     }
 
     /// Builds the update menu item — its title and action track the current

@@ -93,7 +93,7 @@ const STR = {
       <ul>
         <li>Rectangles, arrows, pen, marker, spotlight, mosaic, blur, magnifier, numbered steps, text and emoji</li>
         <li>Scrolling capture, beautify, pin to screen</li>
-        <li>Text recognition and translation, history, image-host upload</li>
+        <li>Text recognition and translation, image-host upload</li>
       </ul>
       <h4>Credits</h4>
       <p>Stitched together from two MIT-licensed apps, <a href="https://github.com/realskyrin/capcap" target="_blank" rel="noopener">capcap</a> by realskyrin and <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener">Tendedero</a> by Alejandro Buján, and not affiliated with either. Product Sans belongs to Google</p>`,
@@ -164,7 +164,7 @@ const STR = {
       <ul>
         <li>矩形、箭头、画笔、高亮笔、聚光灯、马赛克、模糊、放大镜、序号、文字和表情</li>
         <li>长截图、美化、钉在屏幕</li>
-        <li>文字识别与翻译、历史记录、上传图床</li>
+        <li>文字识别与翻译、上传图床</li>
       </ul>
       <h4>致谢</h4>
       <p>由两个 MIT 开源项目拼接而成：realskyrin 的 <a href="https://github.com/realskyrin/capcap" target="_blank" rel="noopener">capcap</a> 和 Alejandro Buján 的 <a href="https://github.com/alejandrobujan/tendedero" target="_blank" rel="noopener">Tendedero</a>，与两位作者都没有关联。Product Sans 字体属于 Google</p>`,

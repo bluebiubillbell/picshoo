@@ -23,8 +23,6 @@ final class HotkeyManager {
     private var finderUploadHotKeyRef: EventHotKeyRef?
     private var fullScreenScreenshotHotKeyRef: EventHotKeyRef?
     private var colorPickerHotKeyRef: EventHotKeyRef?
-    private var historyPanelHotKeyRef: EventHotKeyRef?
-    private var historyPreviewHotKeyRef: EventHotKeyRef?
     private var callback: ((CaptureTriggerContext) -> Void)?
     private var countdownCallback: (() -> Void)?
     private var quickPinCallback: (() -> Void)?
@@ -41,8 +39,6 @@ final class HotkeyManager {
     private var finderUploadCallback: (() -> Void)?
     private var fullScreenScreenshotCallback: (() -> Void)?
     private var colorPickerCallback: (() -> Void)?
-    private var historyPanelCallback: (() -> Void)?
-    private var historyPreviewCallback: (() -> Void)?
     private var eventHandlerRef: EventHandlerRef?
 
     private static let regularHotKeySignature: OSType = OSType(0x4341_5043) // 'CAPC'
@@ -60,8 +56,6 @@ final class HotkeyManager {
     private static let colorPickerHotKeyID: UInt32 = 12
     private static let copyImageTextHotKeyID: UInt32 = 13
     private static let clipboardTextPinHotKeyID: UInt32 = 14
-    private static let historyPanelHotKeyID: UInt32 = 15
-    private static let historyPreviewHotKeyID: UInt32 = 16
     private static let finderUploadHotKeyID: UInt32 = 17
     private static let quickPinHotKeyID: UInt32 = 18
 
@@ -84,8 +78,6 @@ final class HotkeyManager {
         unregisterFinderUpload()
         unregisterFullScreenScreenshot()
         unregisterColorPicker()
-        unregisterHistoryPanel()
-        unregisterHistoryPreview()
         if let handler = eventHandlerRef {
             RemoveEventHandler(handler)
             eventHandlerRef = nil
@@ -518,62 +510,6 @@ final class HotkeyManager {
         }
     }
 
-    /// Register the saved history panel hotkey, if any.
-    func registerHistoryPanel(callback: @escaping () -> Void) {
-        self.historyPanelCallback = callback
-        unregisterHistoryPanel()
-
-        guard let (keyCode, modifiers) = currentHistoryPanelHotkey() else { return }
-
-        installEventHandlerIfNeeded()
-        var ref: EventHotKeyRef?
-        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.historyPanelHotKeyID)
-        let status = RegisterEventHotKey(
-            keyCode, modifiers, id,
-            GetApplicationEventTarget(), 0, &ref
-        )
-        if status == noErr, let ref = ref {
-            historyPanelHotKeyRef = ref
-        }
-    }
-
-    func unregisterHistoryPanel() {
-        if let ref = historyPanelHotKeyRef {
-            UnregisterEventHotKey(ref)
-            historyPanelHotKeyRef = nil
-        }
-    }
-
-    /// Temporarily captures an unmodified Space press while a history tile is
-    /// hovered. Carbon hotkeys work even though the history panel intentionally
-    /// remains a non-activating panel.
-    @discardableResult
-    func registerHistoryPreview(callback: @escaping () -> Void) -> Bool {
-        unregisterHistoryPreview()
-        historyPreviewCallback = callback
-        installEventHandlerIfNeeded()
-        var ref: EventHotKeyRef?
-        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.historyPreviewHotKeyID)
-        let status = RegisterEventHotKey(
-            UInt32(kVK_Space), 0, id,
-            GetApplicationEventTarget(), 0, &ref
-        )
-        if status == noErr, let ref {
-            historyPreviewHotKeyRef = ref
-            return true
-        }
-        historyPreviewCallback = nil
-        return false
-    }
-
-    func unregisterHistoryPreview() {
-        if let ref = historyPreviewHotKeyRef {
-            UnregisterEventHotKey(ref)
-            historyPreviewHotKeyRef = nil
-        }
-        historyPreviewCallback = nil
-    }
-
     /// Returns the (keyCode, modifiers) for the countdown variant — user hotkey + ⌥.
     /// Returns nil if no custom hotkey is set or the saved hotkey already contains ⌥.
     func currentCountdownHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
@@ -604,7 +540,6 @@ final class HotkeyManager {
         unregisterFinderUpload()
         unregisterFullScreenScreenshot()
         unregisterColorPicker()
-        unregisterHistoryPanel()
         NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
     }
 
@@ -854,21 +789,6 @@ final class HotkeyManager {
         return modifierString(mods) + keyString(kc)
     }
 
-    /// Returns (keyCode, carbonModifiers) for the saved history panel hotkey.
-    func currentHistoryPanelHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
-        guard Defaults.hasCustomHistoryPanelHotkey else { return nil }
-        let kc = UInt32(Defaults.historyPanelHotkeyKeyCode)
-        let mods = UInt32(Defaults.historyPanelHotkeyModifiers)
-        guard mods != 0 || Self.isFunctionKey(kc) else { return nil }
-        return (kc, mods)
-    }
-
-    /// Display string for the history panel hotkey, or nil if not set.
-    static func currentHistoryPanelDisplayString() -> String? {
-        guard let (kc, mods) = HotkeyManager.shared.currentHistoryPanelHotkey() else { return nil }
-        return modifierString(mods) + keyString(kc)
-    }
-
     /// Returns (keyCode, carbonModifiers) for the saved copy-to-clipboard
     /// hotkey, or nil when the user hasn't bound one (the default is
     /// "double-tap ⌘", handled separately by `KeyMonitor`).
@@ -919,42 +839,6 @@ final class HotkeyManager {
         return matches(event: event, keyCode: kc, modifiers: m)
     }
 
-    func currentPreviousHistoryImageHotkey() -> (keyCode: UInt32, modifiers: UInt32) {
-        if Defaults.hasCustomPreviousHistoryImageHotkey {
-            return (UInt32(Defaults.previousHistoryImageHotkeyKeyCode),
-                    UInt32(Defaults.previousHistoryImageHotkeyModifiers))
-        }
-        return (UInt32(kVK_ANSI_Comma), 0)
-    }
-
-    static func currentPreviousHistoryImageDisplayString() -> String {
-        let (kc, mods) = HotkeyManager.shared.currentPreviousHistoryImageHotkey()
-        return modifierString(mods) + keyString(kc)
-    }
-
-    static func eventMatchesPreviousHistoryImageHotkey(_ event: NSEvent) -> Bool {
-        let (kc, m) = HotkeyManager.shared.currentPreviousHistoryImageHotkey()
-        return matches(event: event, keyCode: kc, modifiers: m)
-    }
-
-    func currentNextHistoryImageHotkey() -> (keyCode: UInt32, modifiers: UInt32) {
-        if Defaults.hasCustomNextHistoryImageHotkey {
-            return (UInt32(Defaults.nextHistoryImageHotkeyKeyCode),
-                    UInt32(Defaults.nextHistoryImageHotkeyModifiers))
-        }
-        return (UInt32(kVK_ANSI_Period), 0)
-    }
-
-    static func currentNextHistoryImageDisplayString() -> String {
-        let (kc, mods) = HotkeyManager.shared.currentNextHistoryImageHotkey()
-        return modifierString(mods) + keyString(kc)
-    }
-
-    static func eventMatchesNextHistoryImageHotkey(_ event: NSEvent) -> Bool {
-        let (kc, m) = HotkeyManager.shared.currentNextHistoryImageHotkey()
-        return matches(event: event, keyCode: kc, modifiers: m)
-    }
-
     static func carbonModifiers(from flags: NSEvent.ModifierFlags) -> UInt32 {
         let activeMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
         let mods = flags.intersection(activeMask)
@@ -992,9 +876,6 @@ final class HotkeyManager {
         case colorPicker
         case clipboard
         case fileSave
-        case previousHistoryImage
-        case nextHistoryImage
-        case historyPanel
     }
 
     /// Returns a localized message describing the existing binding a candidate
@@ -1166,17 +1047,6 @@ final class HotkeyManager {
                 return L10n.shortcutConflictColorPicker
             }
         }
-        if slot != .historyPanel,
-           let (kc, m) = currentHistoryPanelHotkey(),
-           kc == keyCode {
-            if m == modifiers {
-                return L10n.shortcutConflictHistoryPanel
-            }
-            if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
-               m == modifiers | UInt32(optionKey) {
-                return L10n.shortcutConflictHistoryPanel
-            }
-        }
         if slot != .clipboard, let (kc, m) = currentClipboardHotkey(), kc == keyCode, m == modifiers {
             return L10n.shortcutConflictClipboard
         }
@@ -1184,30 +1054,6 @@ final class HotkeyManager {
             let (kc, m) = currentFileSaveHotkey()
             if kc == keyCode, m == modifiers {
                 return L10n.shortcutConflictFileSave
-            }
-        }
-        if slot != .previousHistoryImage {
-            let (kc, m) = currentPreviousHistoryImageHotkey()
-            if kc == keyCode {
-                if m == modifiers {
-                    return L10n.shortcutConflictPreviousHistoryImage
-                }
-                if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
-                   m == modifiers | UInt32(optionKey) {
-                    return L10n.shortcutConflictPreviousHistoryImage
-                }
-            }
-        }
-        if slot != .nextHistoryImage {
-            let (kc, m) = currentNextHistoryImageHotkey()
-            if kc == keyCode {
-                if m == modifiers {
-                    return L10n.shortcutConflictNextHistoryImage
-                }
-                if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
-                   m == modifiers | UInt32(optionKey) {
-                    return L10n.shortcutConflictNextHistoryImage
-                }
             }
         }
         return nil
@@ -1292,10 +1138,6 @@ final class HotkeyManager {
                     callback = mgr.fullScreenScreenshotCallback
                 case HotkeyManager.colorPickerHotKeyID:
                     callback = mgr.colorPickerCallback
-                case HotkeyManager.historyPanelHotKeyID:
-                    callback = mgr.historyPanelCallback
-                case HotkeyManager.historyPreviewHotKeyID:
-                    callback = mgr.historyPreviewCallback
                 default:
                     callback = nil
                 }
@@ -1398,16 +1240,6 @@ final class HotkeyManager {
     static func applyColorPickerToMenuItem(_ item: NSMenuItem) {
         item.attributedTitle = nil
         guard let (kc, mods) = HotkeyManager.shared.currentColorPickerHotkey() else {
-            item.keyEquivalent = ""
-            item.keyEquivalentModifierMask = []
-            return
-        }
-        apply(keyCode: kc, modifiers: mods, to: item)
-    }
-
-    static func applyHistoryPanelToMenuItem(_ item: NSMenuItem) {
-        item.attributedTitle = nil
-        guard let (kc, mods) = HotkeyManager.shared.currentHistoryPanelHotkey() else {
             item.keyEquivalent = ""
             item.keyEquivalentModifierMask = []
             return

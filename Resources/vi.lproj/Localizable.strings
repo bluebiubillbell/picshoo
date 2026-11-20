@@ -14,18 +14,6 @@
 "launchAtLogin" = "Mở khi đăng nhập";
 "pinAcrossSpaces" = "Hiển thị ghim trên mọi màn hình nền";
 "pinAcrossSpacesHint" = "Ảnh ghim mới xuất hiện trên mọi màn hình nền và Space toàn màn hình";
-"historyCacheToggleLabel" = "Lưu ảnh chụp vào bộ nhớ";
-"historyCacheToggleHint" = "Lưu ảnh chụp gần đây, màu đã chọn và liên kết tải lên để sao chép lại nhanh từ bảng lịch sử";
-"clipboardTextCacheToggleLabel" = "Ghi lại văn bản và tệp bảng nhớ tạm";
-"clipboardTextCacheToggleHint" = "Lưu văn bản và tham chiếu tệp nguồn mà không sao chép tệp";
-"clipboardTextHistoryLimitLabel" = "Giới hạn lịch sử văn bản / tệp";
-"historyCacheLabel" = "Giới hạn lịch sử hình ảnh và phương tiện";
-"historyPanelDisplayModeLabel" = "Cách hiển thị bảng lịch sử";
-"historyPanelDisplayModeHint" = "Chọn Hộp thoại hoặc tai thỏ để xem lịch sử";
-"historyPanelDialogMode" = "Hộp thoại";
-"historyPanelDialogModeHint" = "Mở bảng xem trước ngang từ menu hoặc phím tắt";
-"historyPanelNotchMode" = "Tai thỏ";
-"historyPanelNotchModeHint" = "Di chuột qua hoặc nhấp vào vùng khuyết phía trên để mở, rời khỏi để ẩn";
 "countdownLabel" = "Số giây đếm ngược";
 "countdownHint" = "Giữ ⌥ Option rồi nhấn đúp ⌘ hoặc nhấn phím tắt chụp màn hình để bắt đầu đếm ngược trước khi chụp, Esc để hủy";
 "countdownSecondsSuffix" = "giây";
@@ -96,10 +84,6 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "Lưu vào tệp";
 "fileSaveShortcutHint" = "Nhấn trong trình chỉnh sửa để lưu ảnh chụp dạng PNG vào thư mục ảnh chụp đã đặt. Mặc định là ⌘S";
-"previousHistoryImageShortcutHeader" = "Ảnh chụp lịch sử trước";
-"nextHistoryImageShortcutHeader" = "Ảnh chụp lịch sử tiếp theo";
-"historyPanelShortcutHeader" = "Bảng lịch sử";
-"historyPanelShortcutDefaultDisplay" = "Chưa đặt";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "Phím tắt đã được dùng";
@@ -111,9 +95,6 @@
 "shortcutConflictClipboardTextPin" = "Tổ hợp phím này đã được dùng cho phím tắt ghim văn bản từ clipboard. Vui lòng chọn tổ hợp khác";
 "shortcutConflictClipboard" = "Tổ hợp phím này đã được dùng cho phím tắt sao chép vào clipboard. Vui lòng chọn tổ hợp khác";
 "shortcutConflictFileSave" = "Tổ hợp phím này đã được dùng cho phím tắt lưu vào tệp. Vui lòng chọn tổ hợp khác";
-"shortcutConflictPreviousHistoryImage" = "Tổ hợp phím này đã được dùng cho phím tắt ảnh chụp lịch sử trước. Vui lòng chọn tổ hợp khác";
-"shortcutConflictNextHistoryImage" = "Tổ hợp phím này đã được dùng cho phím tắt ảnh chụp lịch sử tiếp theo. Vui lòng chọn tổ hợp khác";
-"shortcutConflictHistoryPanel" = "Tổ hợp phím này đã được dùng cho phím tắt bảng lịch sử. Vui lòng chọn tổ hợp khác";
 "shortcutConflictSelectedImageEdit" = "Tổ hợp phím này đã được dùng cho phím tắt chỉnh sửa ảnh đã chọn. Vui lòng chọn tổ hợp khác";
 "shortcutConflictClipboardImageEdit" = "Tổ hợp phím này đã được dùng cho phím tắt chỉnh sửa ảnh từ clipboard. Vui lòng chọn tổ hợp khác";
 "shortcutConflictTextRecognition" = "Tổ hợp phím này đã được dùng cho phím tắt nhận dạng văn bản. Vui lòng chọn tổ hợp khác";
@@ -130,70 +111,7 @@
 "colorPicker" = "Chọn màu";
 "settings" = "Cài đặt";
 "quitApp" = "Thoát Picshoo";
-"historyMenu" = "Lịch sử";
-"historyClear" = "Xóa lịch sử";
-"historyCleared" = "Đã xóa lịch sử";
-"historyShowInFinder" = "Hiển thị trong Finder";
-"historyPanelLock" = "Khóa bảng lịch sử";
-"historyPanelUnlock" = "Mở khóa bảng lịch sử";
-"historyPanelFavorite" = "Yêu thích";
-"historyPanelUnfavorite" = "Bỏ yêu thích";
-"historyPanelItemFavorited" = "Đã thêm vào mục yêu thích";
-"historyPanelItemUnfavorited" = "Đã xóa khỏi mục yêu thích";
-"historyPanelMenu" = "Bảng lịch sử";
-"historyPanelDeleteAll" = "Xóa toàn bộ lịch sử";
-"historyPanelDeleteSelectedOne" = "Xóa %d mục";
-"historyPanelDeleteSelected" = "Xóa %d mục";
-"historyPanelDeletedSelectedOne" = "Đã xóa %d mục";
-"historyPanelDeletedSelected" = "Đã xóa %d mục";
-"historyPanelFavoriteFailed" = "Không thể thay đổi mục yêu thích";
-"historyDeletedSkippingFavorites" = "Đã xóa %d mục, bỏ qua %d mục yêu thích";
-"historyPanelFilterAll" = "Tất cả";
-"historyPanelFilterScreenshots" = "Ảnh chụp";
-"historyPanelFilterGIF" = "GIF";
-"historyPanelFilterMP4" = "MP4";
-"historyPanelFilterColors" = "Màu";
-"historyPanelFilterText" = "Văn bản";
-"historyPanelSearchColorsAndText" = "Tìm màu, văn bản và tệp";
-"historyPanelSearchColors" = "Tìm màu";
-"historyPanelSearchText" = "Tìm văn bản";
-"historyPanelClearSearch" = "Xóa tìm kiếm";
-"historyPanelSearchNoResults" = "Không có lịch sử phù hợp";
-"historyPreviewCopyText" = "Sao chép văn bản";
-"historyPreviewTranslateText" = "Dịch văn bản";
-"historyPreviewConvertToQRCode" = "Chuyển thành mã QR";
-"historyPreviewQRCodeTooLong" = "Văn bản quá dài nên không thể chuyển thành mã QR";
 "historyPreviewOriginalText" = "Văn bản gốc";
-"historyPreviewQRCodeTitle" = "Mã QR văn bản";
-"historyPanelCopyHint" = "Nhấp để sao chép";
-"historyPanelCopyDragHint" = "Nhấp để sao chép · kéo vào ứng dụng";
-"historyPanelCopyMarkdownLink" = "Sao chép liên kết MD";
-"historyPanelCopyPlainLink" = "Sao chép liên kết thường";
-"historyPanelEmpty" = "Chưa có lịch sử";
-"historyPanelShortcutGuide" = "Phím tắt";
-"historyPanelShortcutGuideHide" = "Quay lại lịch sử";
-"historyPanelShortcutKeyClick" = "Nhấp";
-"historyPanelShortcutKeyDrag" = "Kéo";
-"historyPanelShortcutKeySpace" = "Phím cách";
-"historyPanelShortcutSearch" = "Mở hoặc đóng tìm kiếm";
-"historyPanelShortcutSwitchFilter" = "Chuyển danh mục";
-"historyPanelShortcutSwitchItem" = "Chuyển sang mục trước hoặc tiếp theo";
-"historyPanelShortcutToggleSelection" = "Chọn hoặc bỏ chọn một mục";
-"historyPanelShortcutRangeSelection" = "Chọn một phạm vi";
-"historyPanelShortcutSelectAll" = "Chọn tất cả mục đang hiển thị";
-"historyPanelShortcutCancel" = "Thoát tìm kiếm hoặc xóa trạng thái hiện tại";
-"historyPanelShortcutCopyItem" = "Sao chép mục";
-"historyPanelShortcutDragItem" = "Kéo ảnh hoặc video sang ứng dụng khác";
-"historyPanelShortcutOpenPreview" = "Xem trước ảnh hoặc văn bản đang trỏ";
-"historyPanelShortcutBrowsePreview" = "Xem mục trước hoặc sau";
-"historyPanelShortcutClosePreview" = "Đóng bản xem trước";
-"historyPanelShortcutCopyPreview" = "Sao chép nội dung xem trước";
-"historyPanelShortcutEditImage" = "Sửa ảnh";
-"historyPanelShortcutPinImage" = "Ghim ảnh";
-"historyPanelShortcutUploadImage" = "Tải ảnh lên";
-"historyPanelShortcutTranslateText" = "Dịch văn bản";
-"historyPanelShortcutQRCode" = "Tạo mã QR";
-"historyPanelShortcutToggleGuide" = "Hiện hoặc ẩn phím tắt";
 
 /* Cursor chip */
 "dragToQuickPin" = "Nhấp vào cửa sổ hoặc kéo chọn vùng để ghim ngay";
@@ -455,7 +373,7 @@
 "uploadSavedToast" = "Đã lưu cấu hình";
 "uploadCurrentDefault" = "Mặc định hiện tại";
 "uploadMarkdownToggleTitle" = "Sao chép dưới dạng liên kết Markdown";
-"uploadMarkdownToggleSubtitle" = "Khi bật, sau khi tải lên sẽ sao chép thẻ ảnh Markdown (![](url)); khi tắt, sao chép URL thuần. Trong bảng Lịch sử, ảnh đám mây khi nhấp sẽ theo thiết lập này, với nút khi rê chuột để chọn MD hoặc liên kết thường";
+"uploadMarkdownToggleSubtitle" = "Khi bật, sau khi tải lên sẽ sao chép thẻ ảnh Markdown (![](url)); khi tắt, sao chép URL thuần";
 "filenameRuleTitle" = "Quy tắc tên tệp";
 "filenameRuleSubtitle" = "Điều khiển tên khi tải ảnh lên, tên mặc định khi lưu ảnh và khi lưu bản ghi. Phần mở rộng được tự động thêm";
 "filenameRulePresetLabel" = "Mẫu";
@@ -694,18 +612,13 @@
 "finderUploadReadFailed" = "Không thể đọc tệp %@";
 "finderUploadCompleted" = "Đã tải %d tệp và sao chép liên kết";
 
-"historyNotchTriggerLabel" = "Cách mở tại vùng khuyết";
-"historyNotchTriggerHover" = "Mở khi di chuột qua";
-"historyNotchTriggerClick" = "Mở khi nhấp chuột";
 
 /* General settings categories */
 "settingsGeneralBasic" = "Cơ bản";
 "settingsGeneralCapture" = "Chụp và ghim";
 "settingsGeneralRecording" = "Ghi hình";
-"settingsGeneralHistory" = "Lịch sử";
 "settingsGeneralFiles" = "Tệp và đầu ra";
 
-"historyPreviewTextSaveFailed" = "Không thể lưu văn bản, vui lòng thử lại";
 
 "windowCapturePreparing" = "Đang chuẩn bị ảnh chụp màn hình";
 
@@ -722,10 +635,10 @@
 "ocrOptionalKey" = "Có thể bỏ trống nếu máy chủ không cần xác thực";
 "ocrVisionModelHint" = "Nhập mô hình thị giác đã cài hoặc có sẵn";
 "ocrLocalDescription" = "Nhận dạng văn bản trên máy Mac này mà không tải ảnh lên";
-"ocrCloudDescription" = "Ảnh được gửi đến nhà cung cấp đã chọn khi dùng OCR, bao gồm dịch ảnh chụp, ảnh ghim và xem trước lịch sử";
+"ocrCloudDescription" = "Ảnh được gửi đến nhà cung cấp đã chọn khi dùng OCR, bao gồm dịch ảnh chụp và ảnh ghim";
 "ocrCompatibleDescription" = "Dùng API Chat Completions hỗ trợ thị giác như OpenAI, Qwen hoặc máy chủ cục bộ · Ảnh được gửi đến địa chỉ bạn cấu hình";
 "ocrOllamaDescription" = "Kết nối Ollama và nhập mô hình thị giác đã cài · Ảnh được gửi đến máy chủ Ollama đã cấu hình";
-"ocrTextOnlyDescription" = "Mô hình này chỉ trả về văn bản, không có tọa độ · Ảnh ghim và lịch sử sẽ mở bảng kết quả thay vì chọn chữ trên ảnh";
+"ocrTextOnlyDescription" = "Mô hình này chỉ trả về văn bản, không có tọa độ · Ảnh ghim sẽ mở bảng kết quả thay vì chọn chữ trên ảnh";
 "ocrDocumentation" = "Tài liệu nhà cung cấp";
 "ocrSettingsSaved" = "Tự động lưu cài đặt · Áp dụng cho lần nhận dạng tiếp theo";
 "ocrConfigurationError" = "Điền thông tin xác thực, địa chỉ API và mô hình bắt buộc";
@@ -735,22 +648,12 @@
 "ocrTimeoutError" = "OCR hết thời gian chờ · Kiểm tra dịch vụ hoặc thử lại";
 "ocrRequestFailed" = "Yêu cầu OCR thất bại";
 
-"historyPanelFilterFiles" = "Tệp";
 
-"historyPanelFolder" = "Thư mục";
 
-"historyPanelSearchFiles" = "Tìm tên và đường dẫn tệp";
 
-"historyPanelSourceUnavailable" = "Tệp nguồn không khả dụng";
 
-"historyPanelSourceUnavailableHint" = "Một số tệp nguồn đã bị xóa, ngoại tuyến hoặc chưa tải xuống";
 
-"historyFilePreviewPrevious" = "Tệp trước";
 
-"historyFilePreviewNext" = "Tệp tiếp theo";
 
-"historyFilePreviewLoading" = "Đang tải bản xem trước";
 
-"historyFilePreviewRetry" = "Kiểm tra lại";
 
-"historyFilePreviewUnavailable" = "Không thể xem trước tệp này";

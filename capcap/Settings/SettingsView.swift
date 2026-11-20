@@ -6,11 +6,11 @@ import PermissionFlow
 
 enum SettingsTab: CaseIterable {
     case general
+    case line
     case shortcuts
     case toolbar
     case capture
     case recording
-    case history
     case files
     case upload
     case ocr
@@ -21,10 +21,10 @@ enum SettingsTab: CaseIterable {
     var title: String {
         switch self {
         case .general: return L10n.settingsTabGeneral
+        case .line: return L("Line")
         case .shortcuts: return L10n.settingsTabShortcuts
         case .capture: return L10n.settingsGeneralCapture
         case .recording: return L10n.settingsGeneralRecording
-        case .history: return L10n.settingsGeneralHistory
         case .files: return L10n.settingsGeneralFiles
         case .toolbar: return L10n.settingsTabToolbar
         case .upload: return L10n.settingsTabUpload
@@ -38,10 +38,10 @@ enum SettingsTab: CaseIterable {
     var iconName: String {
         switch self {
         case .general: return "gearshape.fill"
+        case .line: return "tshirt"
         case .shortcuts: return "keyboard"
         case .capture: return "crop"
         case .recording: return "record.circle"
-        case .history: return "clock"
         case .files: return "doc"
         case .toolbar: return "slider.horizontal.3"
         case .upload: return "icloud.and.arrow.up.fill"
@@ -57,11 +57,6 @@ enum SettingsTab: CaseIterable {
     }
 }
 
-private enum HistoryPanelSettingsMode {
-    case dialog
-    case notch
-}
-
 class SettingsView: NSView {
 
     var isStartup: Bool = false
@@ -75,18 +70,7 @@ class SettingsView: NSView {
 
     // Picker & slider
     private var langPicker: NSPopUpButton!
-    private var historyCacheSwitch: NSSwitch!
-    private var clipboardTextCacheSwitch: NSSwitch!
 
-    private var historyCacheSlider: SettingsTickSlider!
-    private var historyCacheValueLabel: NSTextField!
-    private var clipboardTextHistoryLimitSlider: SettingsTickSlider!
-    private var clipboardTextHistoryLimitValueLabel: NSTextField!
-    private var historyPanelModePreview: HistoryPanelModePreviewView!
-    private var historyPanelDialogOption: HistoryPanelModeOptionView!
-    private var historyPanelNotchOption: HistoryPanelModeOptionView!
-    private var historyNotchTriggerLabel: NSTextField?
-    private var historyNotchTriggerPopup: NSPopUpButton?
     private var countdownSlider: SettingsTickSlider!
     private var countdownValueLabel: NSTextField!
     private var countdownTitleLabel: NSTextField!
@@ -221,24 +205,8 @@ class SettingsView: NSView {
     private var fileSaveShortcutRestoreButton: NSButton!
     private var fileSaveShortcutRecordingMonitor: Any?
 
-    // History navigation shortcut cards
-    private var previousHistoryImageShortcutTitleLabel: NSTextField!
-    private var previousHistoryImageShortcutField: NSTextField!
-    private var previousHistoryImageShortcutSetButton: NSButton!
-    private var previousHistoryImageShortcutRestoreButton: NSButton!
-    private var previousHistoryImageShortcutRecordingMonitor: Any?
 
-    private var nextHistoryImageShortcutTitleLabel: NSTextField!
-    private var nextHistoryImageShortcutField: NSTextField!
-    private var nextHistoryImageShortcutSetButton: NSButton!
-    private var nextHistoryImageShortcutRestoreButton: NSButton!
-    private var nextHistoryImageShortcutRecordingMonitor: Any?
 
-    private var historyPanelShortcutTitleLabel: NSTextField!
-    private var historyPanelShortcutField: NSTextField!
-    private var historyPanelShortcutSetButton: NSButton!
-    private var historyPanelShortcutRestoreButton: NSButton!
-    private var historyPanelShortcutRecordingMonitor: Any?
 
     private var shortcutResetButton: NSButton?
 
@@ -256,18 +224,6 @@ class SettingsView: NSView {
     private var pinAcrossSpacesTitleLabel: NSTextField!
     private var pinAcrossSpacesSubtitleLabel: NSTextField!
     private var langTitleLabel: NSTextField!
-    private var historyCacheToggleTitleLabel: NSTextField!
-    private var historyCacheToggleHintLabel: NSTextField?
-    private var clipboardTextCacheToggleTitleLabel: NSTextField!
-    private var clipboardTextCacheToggleHintLabel: NSTextField?
-    private var clipboardTextHistoryLimitTitleLabel: NSTextField!
-    private var historyCacheTitleLabel: NSTextField!
-    private var historyPanelDisplayModeTitleLabel: NSTextField!
-    private var historyPanelDisplayModeHintLabel: NSTextField!
-    private var historyPanelDialogModeTitleLabel: NSTextField!
-    private var historyPanelDialogModeHintLabel: NSTextField?
-    private var historyPanelNotchModeTitleLabel: NSTextField!
-    private var historyPanelNotchModeHintLabel: NSTextField?
     private var permHeaderSubtitleLabel: NSTextField?
     private var accessibilityNameLabel: NSTextField!
     private var accessibilityDescLabel: NSTextField!
@@ -305,7 +261,6 @@ class SettingsView: NSView {
     private var tabButtons: [TabButton] = []
     private var detailTitleLabel: NSTextField!
     private var detailScrollView: NSScrollView!
-    private var historyNotchTriggerRow: NSView?
 
     private var paneContainer: NSView!
     private var paneViews: [SettingsTab: NSView] = [:]
@@ -382,12 +337,6 @@ class SettingsView: NSView {
             name: .updateStateDidChange,
             object: nil
         )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(screenParametersChanged),
-            name: NSApplication.didChangeScreenParametersNotification,
-            object: nil
-        )
     }
 
     required init?(coder: NSCoder) {
@@ -413,9 +362,6 @@ class SettingsView: NSView {
         cancelFinderUploadShortcutRecording()
         cancelClipboardShortcutRecording()
         cancelFileSaveShortcutRecording()
-        cancelPreviousHistoryImageShortcutRecording()
-        cancelNextHistoryImageShortcutRecording()
-        cancelHistoryPanelShortcutRecording()
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -460,6 +406,7 @@ class SettingsView: NSView {
 
         // Build all panes
         buildCapturePreferencePanes()
+        paneViews[.line] = LineSettingsPane()
         paneViews[.shortcuts] = buildShortcutsPane()
         paneViews[.toolbar] = buildToolbarPane()
         paneViews[.upload] = buildUploadPane()
@@ -491,9 +438,6 @@ class SettingsView: NSView {
         refreshFinderUploadShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
-        refreshPreviousHistoryImageShortcutDisplay()
-        refreshNextHistoryImageShortcutDisplay()
-        refreshHistoryPanelShortcutDisplay()
     }
 
     // MARK: - Sidebar
@@ -723,7 +667,6 @@ class SettingsView: NSView {
         let basic = paneStack()
         let capture = paneStack()
         let recording = paneStack()
-        let history = paneStack()
         let files = paneStack()
 
         let togglesCard = CardView()
@@ -801,7 +744,6 @@ class SettingsView: NSView {
         pinCard.widthAnchor.constraint(equalTo: capture.widthAnchor).isActive = true
 
         buildRecordingCard(into: recording)
-        buildHistoryCards(into: history)
         buildSavePathCard(into: files)
         buildScreenshotQualityCard(into: files)
         let filenameCard = FilenameRuleCard()
@@ -812,7 +754,6 @@ class SettingsView: NSView {
         paneViews[.general] = wrapPane(basic)
         paneViews[.capture] = wrapPane(capture)
         paneViews[.recording] = wrapPane(recording)
-        paneViews[.history] = wrapPane(history)
         paneViews[.files] = wrapPane(files)
     }
 
@@ -905,48 +846,6 @@ class SettingsView: NSView {
         windowShadowSizeTitleLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(on ? 0.94 : 0.4)
         windowShadowSizeValueLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(on ? 0.88 : 0.4)
         windowShadowPreview?.isEffectEnabled = on
-    }
-
-    private func updateHistoryCacheControlsEnabled() {
-        let mediaOn = Defaults.historyCacheEnabled
-        historyCacheSlider?.isEnabled = mediaOn
-        historyCacheTitleLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(mediaOn ? 0.94 : 0.4)
-        historyCacheValueLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(mediaOn ? 0.88 : 0.4)
-
-        let textOn = Defaults.clipboardTextCacheEnabled
-        clipboardTextHistoryLimitSlider?.isEnabled = textOn
-        clipboardTextHistoryLimitTitleLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(textOn ? 0.94 : 0.4)
-        clipboardTextHistoryLimitValueLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(textOn ? 0.88 : 0.4)
-    }
-
-    private func updateHistoryPanelModeControlsEnabled() {
-        let on = Defaults.isHistoryCacheAvailable
-        let notchAvailable = Defaults.historyPanelNotchAvailable
-        let dialogEnabled = on
-        let notchEnabled = on && notchAvailable
-        let mode = selectedHistoryPanelMode()
-        historyPanelModePreview?.mode = mode
-        historyPanelModePreview?.isEffectEnabled = on
-        historyPanelDialogOption?.isEnabled = dialogEnabled
-        historyPanelNotchOption?.isEnabled = notchEnabled
-        historyPanelDialogOption?.isSelected = mode == .dialog
-        historyPanelNotchOption?.isSelected = mode == .notch
-        let triggerEnabled = notchEnabled && mode == .notch
-        historyNotchTriggerPopup?.isEnabled = triggerEnabled
-        historyNotchTriggerPopup?.selectItem(at: Defaults.HistoryNotchTriggerMode.allCases.firstIndex(of: Defaults.historyNotchTriggerMode) ?? 0)
-        historyNotchTriggerRow?.isHidden = mode != .notch
-        historyNotchTriggerLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(triggerEnabled ? 0.94 : 0.4)
-
-        historyPanelDisplayModeTitleLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(on ? 0.94 : 0.4)
-        historyPanelDisplayModeHintLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(on ? 0.58 : 0.35)
-        historyPanelDialogModeTitleLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(dialogEnabled ? 0.94 : 0.4)
-        historyPanelDialogModeHintLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(dialogEnabled ? 0.58 : 0.35)
-        historyPanelNotchModeTitleLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(notchEnabled ? 0.94 : 0.4)
-        historyPanelNotchModeHintLabel?.textColor = WooTheme.settingsInk.withAlphaComponent(notchEnabled ? 0.58 : 0.35)
-    }
-
-    private func selectedHistoryPanelMode() -> HistoryPanelSettingsMode {
-        Defaults.historyPanelNotchEnabled ? .notch : .dialog
     }
 
     private func refreshSavePathControls() {
@@ -1070,42 +969,6 @@ class SettingsView: NSView {
         fileSaveShortcutRestoreButton = fileSaveShortcut.restoreButton
         stack.addArrangedSubview(fileSaveShortcut.card)
         fileSaveShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        let previousHistoryImageShortcut = buildShortcutCard(
-            title: L10n.previousHistoryImageShortcutHeader,
-            setAction: #selector(previousHistoryImageShortcutSetClicked),
-            restoreAction: #selector(previousHistoryImageShortcutRestoreClicked)
-        )
-        previousHistoryImageShortcutTitleLabel = previousHistoryImageShortcut.title
-        previousHistoryImageShortcutField = previousHistoryImageShortcut.field
-        previousHistoryImageShortcutSetButton = previousHistoryImageShortcut.setButton
-        previousHistoryImageShortcutRestoreButton = previousHistoryImageShortcut.restoreButton
-        stack.addArrangedSubview(previousHistoryImageShortcut.card)
-        previousHistoryImageShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        let nextHistoryImageShortcut = buildShortcutCard(
-            title: L10n.nextHistoryImageShortcutHeader,
-            setAction: #selector(nextHistoryImageShortcutSetClicked),
-            restoreAction: #selector(nextHistoryImageShortcutRestoreClicked)
-        )
-        nextHistoryImageShortcutTitleLabel = nextHistoryImageShortcut.title
-        nextHistoryImageShortcutField = nextHistoryImageShortcut.field
-        nextHistoryImageShortcutSetButton = nextHistoryImageShortcut.setButton
-        nextHistoryImageShortcutRestoreButton = nextHistoryImageShortcut.restoreButton
-        stack.addArrangedSubview(nextHistoryImageShortcut.card)
-        nextHistoryImageShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        let historyPanelShortcut = buildShortcutCard(
-            title: L10n.historyPanelShortcutHeader,
-            setAction: #selector(historyPanelShortcutSetClicked),
-            restoreAction: #selector(historyPanelShortcutRestoreClicked)
-        )
-        historyPanelShortcutTitleLabel = historyPanelShortcut.title
-        historyPanelShortcutField = historyPanelShortcut.field
-        historyPanelShortcutSetButton = historyPanelShortcut.setButton
-        historyPanelShortcutRestoreButton = historyPanelShortcut.restoreButton
-        stack.addArrangedSubview(historyPanelShortcut.card)
-        historyPanelShortcut.card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
         // Full-screen screenshot shortcut card
         let fullScreenScreenshotShortcut = buildShortcutCard(
@@ -1316,121 +1179,6 @@ class SettingsView: NSView {
         return wrapPane(stack)
     }
 
-    private func buildHistoryCards(into stack: NSStackView) {
-        // History cache card
-        let historyCard = CardView()
-        let historyInner = NSStackView()
-        historyInner.orientation = .vertical
-        historyInner.alignment = .leading
-        historyInner.spacing = 10
-        historyInner.translatesAutoresizingMaskIntoConstraints = false
-        historyCard.addSubview(historyInner)
-        pin(historyInner, to: historyCard, insets: NSEdgeInsets(top: 4, left: 14, bottom: 14, right: 14))
-
-        let historyToggle = makeToggleRow(
-            title: L10n.historyCacheToggleLabel,
-            subtitle: L10n.historyCacheToggleHint,
-            isOn: Defaults.historyCacheEnabled,
-            action: #selector(historyCacheToggled(_:))
-        )
-        historyCacheToggleTitleLabel = historyToggle.title
-        historyCacheToggleHintLabel = historyToggle.subtitle
-        historyCacheSwitch = historyToggle.toggle
-        historyInner.addArrangedSubview(historyToggle.row)
-        historyToggle.row.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let historyHeader = NSStackView()
-        historyHeader.orientation = .horizontal
-        historyHeader.alignment = .firstBaseline
-        historyHeader.spacing = 8
-        historyHeader.translatesAutoresizingMaskIntoConstraints = false
-
-        historyCacheTitleLabel = primaryLabel(L10n.historyCacheLabel)
-        historyHeader.addArrangedSubview(historyCacheTitleLabel)
-        historyHeader.addArrangedSubview(flexSpacer())
-
-        historyCacheValueLabel = NSTextField(labelWithString: "\(Defaults.historyCacheLimit)")
-        historyCacheValueLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .semibold)
-        historyCacheValueLabel.textColor = WooTheme.settingsInk.withAlphaComponent(0.88)
-        historyHeader.addArrangedSubview(historyCacheValueLabel)
-
-        historyInner.addArrangedSubview(historyHeader)
-        historyHeader.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let slider = SettingsTickSlider(
-            value: Double(Defaults.historyCacheLimit),
-            minValue: Double(Defaults.historyCacheMin),
-            maxValue: Double(Defaults.historyCacheMax),
-            stepValue: Double(Defaults.historyCacheStep),
-            numberOfTickMarks: (Defaults.historyCacheMax - Defaults.historyCacheMin) / Defaults.historyCacheStep + 1,
-            target: self,
-            action: #selector(historyCacheSliderChanged(_:))
-        )
-        slider.translatesAutoresizingMaskIntoConstraints = false
-        historyCacheSlider = slider
-        historyInner.addArrangedSubview(slider)
-        slider.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextDivider = rowDivider()
-        historyInner.addArrangedSubview(clipboardTextDivider)
-        clipboardTextDivider.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextToggle = makeToggleRow(
-            title: L10n.clipboardTextCacheToggleLabel,
-            subtitle: L10n.clipboardTextCacheToggleHint,
-            isOn: Defaults.clipboardTextCacheEnabled,
-            action: #selector(clipboardTextCacheToggled(_:))
-        )
-        clipboardTextCacheToggleTitleLabel = clipboardTextToggle.title
-        clipboardTextCacheToggleHintLabel = clipboardTextToggle.subtitle
-        clipboardTextCacheSwitch = clipboardTextToggle.toggle
-        historyInner.addArrangedSubview(clipboardTextToggle.row)
-        clipboardTextToggle.row.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextHistoryHeader = NSStackView()
-        clipboardTextHistoryHeader.orientation = .horizontal
-        clipboardTextHistoryHeader.alignment = .firstBaseline
-        clipboardTextHistoryHeader.spacing = 8
-        clipboardTextHistoryHeader.translatesAutoresizingMaskIntoConstraints = false
-
-        clipboardTextHistoryLimitTitleLabel = primaryLabel(L10n.clipboardTextHistoryLimitLabel)
-        clipboardTextHistoryHeader.addArrangedSubview(clipboardTextHistoryLimitTitleLabel)
-        clipboardTextHistoryHeader.addArrangedSubview(flexSpacer())
-
-        clipboardTextHistoryLimitValueLabel = NSTextField(
-            labelWithString: "\(Defaults.clipboardTextHistoryLimit)"
-        )
-        clipboardTextHistoryLimitValueLabel.font = NSFont.monospacedDigitSystemFont(ofSize: 13, weight: .semibold)
-        clipboardTextHistoryLimitValueLabel.textColor = WooTheme.settingsInk.withAlphaComponent(0.88)
-        clipboardTextHistoryHeader.addArrangedSubview(clipboardTextHistoryLimitValueLabel)
-
-        historyInner.addArrangedSubview(clipboardTextHistoryHeader)
-        clipboardTextHistoryHeader.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        let clipboardTextSlider = SettingsTickSlider(
-            value: Double(Defaults.clipboardTextHistoryLimit),
-            minValue: Double(Defaults.clipboardTextHistoryLimitMin),
-            maxValue: Double(Defaults.clipboardTextHistoryLimitMax),
-            stepValue: Double(Defaults.clipboardTextHistoryLimitStep),
-            numberOfTickMarks: (Defaults.clipboardTextHistoryLimitMax - Defaults.clipboardTextHistoryLimitMin)
-                / Defaults.clipboardTextHistoryLimitStep + 1,
-            target: self,
-            action: #selector(clipboardTextHistoryLimitSliderChanged(_:))
-        )
-        clipboardTextSlider.translatesAutoresizingMaskIntoConstraints = false
-        clipboardTextHistoryLimitSlider = clipboardTextSlider
-        historyInner.addArrangedSubview(clipboardTextSlider)
-        clipboardTextSlider.widthAnchor.constraint(equalTo: historyInner.widthAnchor).isActive = true
-
-        updateHistoryCacheControlsEnabled()
-
-        stack.addArrangedSubview(historyCard)
-        historyCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-
-        buildHistoryPanelModeCard(into: stack)
-
-    }
-
     private func buildCountdownCard(into stack: NSStackView) {
         // Countdown card
         let countdownCard = CardView()
@@ -1480,92 +1228,6 @@ class SettingsView: NSView {
 
         stack.addArrangedSubview(countdownCard)
         countdownCard.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
-    }
-
-    private func buildHistoryPanelModeCard(into stack: NSStackView) {
-        let card = CardView()
-        let inner = NSStackView()
-        inner.orientation = .vertical
-        inner.alignment = .leading
-        inner.spacing = 14
-        inner.translatesAutoresizingMaskIntoConstraints = false
-        card.addSubview(inner)
-        pin(inner, to: card, insets: NSEdgeInsets(top: 14, left: 16, bottom: 16, right: 16))
-
-        historyPanelDisplayModeTitleLabel = primaryLabel(L10n.historyPanelDisplayModeLabel)
-        historyPanelDisplayModeHintLabel = secondaryLabel(L10n.historyPanelDisplayModeHint, wrapping: true)
-        inner.addArrangedSubview(historyPanelDisplayModeTitleLabel)
-        inner.addArrangedSubview(historyPanelDisplayModeHintLabel)
-        historyPanelDisplayModeHintLabel.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let preview = HistoryPanelModePreviewView(mode: selectedHistoryPanelMode())
-        preview.translatesAutoresizingMaskIntoConstraints = false
-        historyPanelModePreview = preview
-        inner.addArrangedSubview(preview)
-        NSLayoutConstraint.activate([
-            preview.widthAnchor.constraint(equalTo: inner.widthAnchor),
-            preview.heightAnchor.constraint(equalToConstant: 136),
-        ])
-
-        let optionRow = NSStackView()
-        optionRow.orientation = .horizontal
-        optionRow.alignment = .top
-        optionRow.distribution = .fillEqually
-        optionRow.spacing = 12
-        optionRow.translatesAutoresizingMaskIntoConstraints = false
-
-        let dialog = HistoryPanelModeOptionView(
-            mode: .dialog,
-            title: L10n.historyPanelDialogMode,
-            subtitle: L10n.historyPanelDialogModeHint
-        )
-        historyPanelDialogModeTitleLabel = dialog.title
-        historyPanelDialogModeHintLabel = dialog.subtitle
-        historyPanelDialogOption = dialog
-        dialog.target = self
-        dialog.action = #selector(historyPanelModeOptionClicked(_:))
-
-        let notch = HistoryPanelModeOptionView(
-            mode: .notch,
-            title: L10n.historyPanelNotchMode,
-            subtitle: L10n.historyPanelNotchModeHint
-        )
-        historyPanelNotchModeTitleLabel = notch.title
-        historyPanelNotchModeHintLabel = notch.subtitle
-        historyPanelNotchOption = notch
-        notch.target = self
-        notch.action = #selector(historyPanelModeOptionClicked(_:))
-
-        optionRow.addArrangedSubview(dialog)
-        optionRow.addArrangedSubview(notch)
-        inner.addArrangedSubview(optionRow)
-        optionRow.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        let triggerRow = NSStackView()
-        triggerRow.orientation = .horizontal
-        triggerRow.alignment = .centerY
-        triggerRow.spacing = 10
-        historyNotchTriggerRow = triggerRow
-        let triggerLabel = primaryLabel(L10n.historyNotchTriggerLabel)
-        historyNotchTriggerLabel = triggerLabel
-        triggerRow.addArrangedSubview(triggerLabel)
-        triggerRow.addArrangedSubview(flexSpacer())
-        let triggerPopup = NSPopUpButton(frame: .zero, pullsDown: false)
-        triggerPopup.controlSize = .small
-        triggerPopup.font = WooTheme.font(ofSize: 12)
-        triggerPopup.addItems(withTitles: Defaults.HistoryNotchTriggerMode.allCases.map { $0.localizedTitle })
-        triggerPopup.setAccessibilityLabel(L10n.historyNotchTriggerLabel)
-        triggerPopup.target = self
-        triggerPopup.action = #selector(historyNotchTriggerChanged(_:))
-        historyNotchTriggerPopup = triggerPopup
-        triggerRow.addArrangedSubview(triggerPopup)
-        inner.addArrangedSubview(triggerRow)
-        triggerRow.widthAnchor.constraint(equalTo: inner.widthAnchor).isActive = true
-
-        updateHistoryPanelModeControlsEnabled()
-
-        stack.addArrangedSubview(card)
-        card.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
     }
 
     private func buildScreenshotQualityCard(into stack: NSStackView) {
@@ -2063,10 +1725,13 @@ class SettingsView: NSView {
         infoCard.addSubview(infoInner)
         pin(infoInner, to: infoCard, insets: NSEdgeInsets(top: 4, left: 0, bottom: 4, right: 0))
 
-        let updateRow = makeUpdateRow()
-        infoInner.addArrangedSubview(updateRow)
-        updateRow.widthAnchor.constraint(equalTo: infoInner.widthAnchor).isActive = true
-        infoInner.addArrangedSubview(rowDivider())
+        // Updates stay off until Picshoo publishes releases of its own.
+        if UpdateChecker.isEnabled {
+            let updateRow = makeUpdateRow()
+            infoInner.addArrangedSubview(updateRow)
+            updateRow.widthAnchor.constraint(equalTo: infoInner.widthAnchor).isActive = true
+            infoInner.addArrangedSubview(rowDivider())
+        }
 
         let license = makeInfoRow(title: L10n.aboutLicense, value: "MIT")
         aboutLicenseTitleLabel = license.title
@@ -2076,7 +1741,7 @@ class SettingsView: NSView {
 
         let repo = makeLinkRow(
             title: L10n.aboutSourceCode,
-            value: "github.com/realskyrin/capcap",
+            value: "github.com/bluebiubillbell/picshoo",
             action: #selector(openSourceRepo)
         )
         aboutSourceTitleLabel = repo.title
@@ -2482,25 +2147,25 @@ class SettingsView: NSView {
     }
 
     @objc private func openSourceRepo() {
-        if let url = URL(string: "https://github.com/realskyrin/capcap") {
+        if let url = URL(string: "https://github.com/bluebiubillbell/picshoo") {
             NSWorkspace.shared.open(url)
         }
     }
 
     @objc private func openStarOnGitHub() {
-        if let url = URL(string: "https://github.com/realskyrin/capcap") {
+        if let url = URL(string: "https://github.com/bluebiubillbell/picshoo") {
             NSWorkspace.shared.open(url)
         }
     }
 
     @objc private func openFeatureRequest() {
-        if let url = URL(string: "https://github.com/realskyrin/capcap/issues/new?template=feature_request.yml") {
+        if let url = URL(string: "https://github.com/bluebiubillbell/picshoo/issues/new") {
             NSWorkspace.shared.open(url)
         }
     }
 
     @objc private func openBugReport() {
-        if let url = URL(string: "https://github.com/realskyrin/capcap/issues/new?template=bug_report.yml") {
+        if let url = URL(string: "https://github.com/bluebiubillbell/picshoo/issues/new") {
             NSWorkspace.shared.open(url)
         }
     }
@@ -2999,6 +2664,10 @@ class SettingsView: NSView {
         selectTab(.permissions)
     }
 
+    func showLineTab() {
+        selectTab(.line)
+    }
+
     // MARK: - Permission polling
 
     private func startRefreshTimer() {
@@ -3139,66 +2808,6 @@ class SettingsView: NSView {
     private func revealSaveDirectory(_ url: URL) {
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         NSWorkspace.shared.activateFileViewerSelecting([url])
-    }
-
-    @objc private func historyCacheSliderChanged(_ sender: SettingsTickSlider) {
-        guard Defaults.historyCacheEnabled else {
-            sender.doubleValue = Double(Defaults.historyCacheLimit)
-            return
-        }
-        let value = Int(sender.doubleValue.rounded())
-        Defaults.historyCacheLimit = value
-        let normalizedValue = Defaults.historyCacheLimit
-        sender.doubleValue = Double(normalizedValue)
-        historyCacheValueLabel?.stringValue = "\(normalizedValue)"
-    }
-
-    @objc private func clipboardTextHistoryLimitSliderChanged(_ sender: SettingsTickSlider) {
-        guard Defaults.clipboardTextCacheEnabled else {
-            sender.doubleValue = Double(Defaults.clipboardTextHistoryLimit)
-            return
-        }
-        Defaults.clipboardTextHistoryLimit = Int(sender.doubleValue.rounded())
-        let normalizedValue = Defaults.clipboardTextHistoryLimit
-        sender.doubleValue = Double(normalizedValue)
-        clipboardTextHistoryLimitValueLabel?.stringValue = "\(normalizedValue)"
-    }
-
-    @objc private func historyCacheToggled(_ sender: NSSwitch) {
-        Defaults.historyCacheEnabled = sender.state == .on
-        updateHistoryCacheControlsEnabled()
-        updateHistoryPanelModeControlsEnabled()
-    }
-
-    @objc private func clipboardTextCacheToggled(_ sender: NSSwitch) {
-        Defaults.clipboardTextCacheEnabled = sender.state == .on
-        updateHistoryCacheControlsEnabled()
-        updateHistoryPanelModeControlsEnabled()
-    }
-
-    @objc private func historyNotchTriggerChanged(_ sender: NSPopUpButton) {
-        let modes = Defaults.HistoryNotchTriggerMode.allCases
-        guard modes.indices.contains(sender.indexOfSelectedItem) else { return }
-        Defaults.historyNotchTriggerMode = modes[sender.indexOfSelectedItem]
-    }
-
-    @objc private func historyPanelModeOptionClicked(_ sender: HistoryPanelModeOptionView) {
-        guard Defaults.isHistoryCacheAvailable else { return }
-        switch sender.mode {
-        case .dialog:
-            Defaults.historyPanelDialogEnabled = true
-        case .notch:
-            guard Defaults.historyPanelNotchAvailable else {
-                updateHistoryPanelModeControlsEnabled()
-                return
-            }
-            Defaults.historyPanelNotchEnabled = true
-        }
-        updateHistoryPanelModeControlsEnabled()
-    }
-
-    @objc private func screenParametersChanged() {
-        updateHistoryPanelModeControlsEnabled()
     }
 
     @objc private func countdownSliderChanged(_ sender: SettingsTickSlider) {
@@ -3464,15 +3073,6 @@ class SettingsView: NSView {
         }
         if slot != .fileSave, fileSaveShortcutRecordingMonitor != nil {
             cancelFileSaveShortcutRecording()
-        }
-        if slot != .previousHistoryImage, previousHistoryImageShortcutRecordingMonitor != nil {
-            cancelPreviousHistoryImageShortcutRecording()
-        }
-        if slot != .nextHistoryImage, nextHistoryImageShortcutRecordingMonitor != nil {
-            cancelNextHistoryImageShortcutRecording()
-        }
-        if slot != .historyPanel, historyPanelShortcutRecordingMonitor != nil {
-            cancelHistoryPanelShortcutRecording()
         }
     }
 
@@ -4984,249 +4584,6 @@ class SettingsView: NSView {
         fileSaveShortcutRestoreButton?.isHidden = !Defaults.hasCustomFileSaveHotkey
     }
 
-    @objc private func previousHistoryImageShortcutSetClicked() {
-        if previousHistoryImageShortcutRecordingMonitor != nil {
-            cancelPreviousHistoryImageShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .previousHistoryImage)
-        HotkeyManager.shared.beginRecording()
-        previousHistoryImageShortcutSetButton.title = L10n.shortcutCancel
-        previousHistoryImageShortcutField.stringValue = L10n.shortcutWaiting
-        previousHistoryImageShortcutRestoreButton.isHidden = true
-
-        previousHistoryImageShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelPreviousHistoryImageShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .previousHistoryImage) {
-                self.cancelPreviousHistoryImageShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.previousHistoryImageHotkeyKeyCode = Int(keyCode)
-            Defaults.previousHistoryImageHotkeyModifiers = Int(carbonMods)
-            self.finishPreviousHistoryImageShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func previousHistoryImageShortcutRestoreClicked() {
-        if previousHistoryImageShortcutRecordingMonitor != nil {
-            cancelPreviousHistoryImageShortcutRecording()
-        }
-        Defaults.clearPreviousHistoryImageHotkey()
-        refreshPreviousHistoryImageShortcutDisplay()
-    }
-
-    private func finishPreviousHistoryImageShortcutRecording() {
-        if let m = previousHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            previousHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshPreviousHistoryImageShortcutDisplay()
-    }
-
-    func cancelPreviousHistoryImageShortcutRecording() {
-        guard previousHistoryImageShortcutRecordingMonitor != nil else { return }
-        if let m = previousHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            previousHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshPreviousHistoryImageShortcutDisplay()
-    }
-
-    private func refreshPreviousHistoryImageShortcutDisplay() {
-        previousHistoryImageShortcutSetButton?.title = L10n.shortcutSet
-        previousHistoryImageShortcutField?.stringValue = HotkeyManager.currentPreviousHistoryImageDisplayString()
-        previousHistoryImageShortcutRestoreButton?.isHidden = !Defaults.hasCustomPreviousHistoryImageHotkey
-    }
-
-    @objc private func nextHistoryImageShortcutSetClicked() {
-        if nextHistoryImageShortcutRecordingMonitor != nil {
-            cancelNextHistoryImageShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .nextHistoryImage)
-        HotkeyManager.shared.beginRecording()
-        nextHistoryImageShortcutSetButton.title = L10n.shortcutCancel
-        nextHistoryImageShortcutField.stringValue = L10n.shortcutWaiting
-        nextHistoryImageShortcutRestoreButton.isHidden = true
-
-        nextHistoryImageShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelNextHistoryImageShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .nextHistoryImage) {
-                self.cancelNextHistoryImageShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.nextHistoryImageHotkeyKeyCode = Int(keyCode)
-            Defaults.nextHistoryImageHotkeyModifiers = Int(carbonMods)
-            self.finishNextHistoryImageShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func nextHistoryImageShortcutRestoreClicked() {
-        if nextHistoryImageShortcutRecordingMonitor != nil {
-            cancelNextHistoryImageShortcutRecording()
-        }
-        Defaults.clearNextHistoryImageHotkey()
-        refreshNextHistoryImageShortcutDisplay()
-    }
-
-    private func finishNextHistoryImageShortcutRecording() {
-        if let m = nextHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            nextHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshNextHistoryImageShortcutDisplay()
-    }
-
-    func cancelNextHistoryImageShortcutRecording() {
-        guard nextHistoryImageShortcutRecordingMonitor != nil else { return }
-        if let m = nextHistoryImageShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            nextHistoryImageShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshNextHistoryImageShortcutDisplay()
-    }
-
-    private func refreshNextHistoryImageShortcutDisplay() {
-        nextHistoryImageShortcutSetButton?.title = L10n.shortcutSet
-        nextHistoryImageShortcutField?.stringValue = HotkeyManager.currentNextHistoryImageDisplayString()
-        nextHistoryImageShortcutRestoreButton?.isHidden = !Defaults.hasCustomNextHistoryImageHotkey
-    }
-
-    @objc private func historyPanelShortcutSetClicked() {
-        if historyPanelShortcutRecordingMonitor != nil {
-            cancelHistoryPanelShortcutRecording()
-            return
-        }
-        cancelShortcutRecordings(except: .historyPanel)
-        HotkeyManager.shared.beginRecording()
-        historyPanelShortcutSetButton.title = L10n.shortcutCancel
-        historyPanelShortcutField.stringValue = L10n.shortcutWaiting
-        historyPanelShortcutRestoreButton.isHidden = true
-
-        historyPanelShortcutRecordingMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            let modifiers = event.modifierFlags
-            let isEscape = event.keyCode == UInt16(kVK_Escape)
-            let activeModifierMask: NSEvent.ModifierFlags = [.command, .shift, .option, .control]
-            let pressedModifiers = modifiers.intersection(activeModifierMask)
-
-            if isEscape && pressedModifiers.isEmpty {
-                self.cancelHistoryPanelShortcutRecording()
-                return nil
-            }
-
-            var carbonMods: UInt32 = 0
-            if modifiers.contains(.command) { carbonMods |= UInt32(cmdKey) }
-            if modifiers.contains(.shift)   { carbonMods |= UInt32(shiftKey) }
-            if modifiers.contains(.option)  { carbonMods |= UInt32(optionKey) }
-            if modifiers.contains(.control) { carbonMods |= UInt32(controlKey) }
-            let keyCode = UInt32(event.keyCode)
-
-            if carbonMods == 0 && !HotkeyManager.isFunctionKey(keyCode) {
-                self.cancelHistoryPanelShortcutRecording()
-                self.presentShortcutNeedsModifierAlert()
-                return nil
-            }
-
-            if let conflict = HotkeyManager.shared.hotkeyConflictMessage(
-                forKeyCode: keyCode, modifiers: carbonMods, assigningTo: .historyPanel) {
-                self.cancelHistoryPanelShortcutRecording()
-                self.presentHotkeyConflictAlert(conflict)
-                return nil
-            }
-
-            Defaults.historyPanelHotkeyKeyCode = Int(keyCode)
-            Defaults.historyPanelHotkeyModifiers = Int(carbonMods)
-            self.finishHistoryPanelShortcutRecording()
-            return nil
-        }
-    }
-
-    @objc private func historyPanelShortcutRestoreClicked() {
-        if historyPanelShortcutRecordingMonitor != nil {
-            cancelHistoryPanelShortcutRecording()
-        }
-        Defaults.clearHistoryPanelHotkey()
-        NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
-        refreshHistoryPanelShortcutDisplay()
-    }
-
-    private func finishHistoryPanelShortcutRecording() {
-        if let m = historyPanelShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            historyPanelShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshHistoryPanelShortcutDisplay()
-    }
-
-    func cancelHistoryPanelShortcutRecording() {
-        guard historyPanelShortcutRecordingMonitor != nil else { return }
-        if let m = historyPanelShortcutRecordingMonitor {
-            NSEvent.removeMonitor(m)
-            historyPanelShortcutRecordingMonitor = nil
-        }
-        HotkeyManager.shared.endRecording()
-        refreshHistoryPanelShortcutDisplay()
-    }
-
-    private func refreshHistoryPanelShortcutDisplay() {
-        historyPanelShortcutSetButton?.title = L10n.shortcutSet
-        if let display = HotkeyManager.currentHistoryPanelDisplayString() {
-            historyPanelShortcutField?.stringValue = display
-            historyPanelShortcutRestoreButton?.isHidden = false
-        } else {
-            historyPanelShortcutField?.stringValue = L10n.historyPanelShortcutDefaultDisplay
-            historyPanelShortcutRestoreButton?.isHidden = true
-        }
-    }
-
     @objc private func shortcutsResetClicked() {
         cancelShortcutRecording()
         cancelFullScreenScreenshotShortcutRecording()
@@ -5245,9 +4602,6 @@ class SettingsView: NSView {
         cancelFinderUploadShortcutRecording()
         cancelClipboardShortcutRecording()
         cancelFileSaveShortcutRecording()
-        cancelPreviousHistoryImageShortcutRecording()
-        cancelNextHistoryImageShortcutRecording()
-        cancelHistoryPanelShortcutRecording()
 
         Defaults.resetShortcutHotkeysToDefaults()
         NotificationCenter.default.post(name: .hotkeyDidChange, object: nil)
@@ -5268,9 +4622,6 @@ class SettingsView: NSView {
         refreshFinderUploadShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
-        refreshPreviousHistoryImageShortcutDisplay()
-        refreshNextHistoryImageShortcutDisplay()
-        refreshHistoryPanelShortcutDisplay()
     }
 
     @objc private func updateLocalization() {
@@ -5325,24 +4676,6 @@ class SettingsView: NSView {
         screenRecordingDescLabel?.stringValue = L10n.screenRecordingDescription
         microphoneNameLabel?.stringValue = L10n.microphonePermission
         microphoneDescLabel?.stringValue = L10n.microphoneDescription
-        historyCacheToggleTitleLabel?.stringValue = L10n.historyCacheToggleLabel
-        historyCacheToggleHintLabel?.stringValue = L10n.historyCacheToggleHint
-        clipboardTextCacheToggleTitleLabel?.stringValue = L10n.clipboardTextCacheToggleLabel
-        clipboardTextCacheToggleHintLabel?.stringValue = L10n.clipboardTextCacheToggleHint
-        clipboardTextHistoryLimitTitleLabel?.stringValue = L10n.clipboardTextHistoryLimitLabel
-        historyCacheTitleLabel?.stringValue = L10n.historyCacheLabel
-        historyPanelDisplayModeTitleLabel?.stringValue = L10n.historyPanelDisplayModeLabel
-        historyPanelDisplayModeHintLabel?.stringValue = L10n.historyPanelDisplayModeHint
-        historyPanelDialogModeTitleLabel?.stringValue = L10n.historyPanelDialogMode
-        historyPanelDialogModeHintLabel?.stringValue = L10n.historyPanelDialogModeHint
-        historyPanelNotchModeTitleLabel?.stringValue = L10n.historyPanelNotchMode
-        historyPanelNotchModeHintLabel?.stringValue = L10n.historyPanelNotchModeHint
-        historyNotchTriggerLabel?.stringValue = L10n.historyNotchTriggerLabel
-        historyNotchTriggerPopup?.setAccessibilityLabel(L10n.historyNotchTriggerLabel)
-        for (index, mode) in Defaults.HistoryNotchTriggerMode.allCases.enumerated() {
-            historyNotchTriggerPopup?.item(at: index)?.title = mode.localizedTitle
-        }
-        updateHistoryPanelModeControlsEnabled()
         windowShadowTitleLabel?.stringValue = L10n.windowShadowToggleLabel
         windowShadowSubtitleLabel?.stringValue = L10n.windowShadowToggleHint
         windowShadowSizeTitleLabel?.stringValue = L10n.shadowSizeLabel
@@ -5384,12 +4717,6 @@ class SettingsView: NSView {
         clipboardShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         fileSaveShortcutTitleLabel?.stringValue = L10n.fileSaveShortcutHeader
         fileSaveShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        previousHistoryImageShortcutTitleLabel?.stringValue = L10n.previousHistoryImageShortcutHeader
-        previousHistoryImageShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        nextHistoryImageShortcutTitleLabel?.stringValue = L10n.nextHistoryImageShortcutHeader
-        nextHistoryImageShortcutRestoreButton?.toolTip = L10n.shortcutRestore
-        historyPanelShortcutTitleLabel?.stringValue = L10n.historyPanelShortcutHeader
-        historyPanelShortcutRestoreButton?.toolTip = L10n.shortcutRestore
         shortcutResetButton?.title = L10n.toolbarSettingsReset
         aboutTaglineLabel?.stringValue = L10n.aboutTagline
         aboutLicenseTitleLabel?.stringValue = L10n.aboutLicense
@@ -5425,9 +4752,6 @@ class SettingsView: NSView {
         refreshFinderUploadShortcutDisplay()
         refreshClipboardShortcutDisplay()
         refreshFileSaveShortcutDisplay()
-        refreshPreviousHistoryImageShortcutDisplay()
-        refreshNextHistoryImageShortcutDisplay()
-        refreshHistoryPanelShortcutDisplay()
         refreshBottomAction()
         accessibilityBadge?.refreshTitle()
         screenRecordingBadge?.refreshTitle()
@@ -6136,353 +5460,6 @@ private final class ShadowPreviewView: NSView {
         NSColor.black.withAlphaComponent(0.08).setStroke()
         cardPath.lineWidth = 1
         cardPath.stroke()
-    }
-}
-
-private final class HistoryPanelModePreviewView: NSView {
-    var mode: HistoryPanelSettingsMode {
-        didSet { needsDisplay = true }
-    }
-
-    var isEffectEnabled: Bool = true {
-        didSet { needsDisplay = true }
-    }
-
-    // Woo's palette: on Chelsea a club blue panel with a gold highlight, on
-    // Mercedes a black panel with a mint one.
-    private let accentBlue = WooTheme.dynamic("woo.previewHighlight", light: 0xF5E06B, dark: 0x6FE7C6)
-    private let surfaceColor = WooTheme.dynamic("woo.previewPanel", light: 0x001489, dark: 0x000000)
-
-    init(mode: HistoryPanelSettingsMode) {
-        self.mode = mode
-        super.init(frame: .zero)
-        wantsLayer = true
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func draw(_ dirtyRect: NSRect) {
-        guard let ctx = NSGraphicsContext.current else { return }
-
-        let rect = bounds
-        let backdrop = NSBezierPath(roundedRect: rect, xRadius: 16, yRadius: 16)
-        ctx.saveGraphicsState()
-        backdrop.addClip()
-
-        WooTheme.settingsInk.withAlphaComponent(0.05).setFill()
-        backdrop.fill()
-        ctx.cgContext.setAlpha(isEffectEnabled ? 1 : 0.42)
-        switch mode {
-        case .dialog:
-            drawDialogPreview(in: rect.insetBy(dx: 24, dy: 18))
-        case .notch:
-            drawNotchPreview(in: rect.insetBy(dx: 24, dy: 0))
-        }
-        ctx.restoreGraphicsState()
-
-        WooTheme.settingsInk.withAlphaComponent(isEffectEnabled ? 0.08 : 0.04).setStroke()
-        backdrop.lineWidth = 1
-        backdrop.stroke()
-    }
-
-    private func drawDialogPreview(in rect: NSRect) {
-        let panelWidth = min(rect.width * 0.82, 560)
-        let panelHeight = min(rect.height - 14, 86)
-        let panelRect = NSRect(
-            x: rect.midX - panelWidth / 2,
-            y: rect.midY - panelHeight / 2 - 6,
-            width: panelWidth,
-            height: panelHeight
-        )
-        drawFloatingSurface(in: panelRect, radius: 18, shadow: true)
-        drawToolbarLine(in: panelRect)
-        drawTileRow(in: panelRect.insetBy(dx: 18, dy: 16), count: 4)
-    }
-
-    private func drawNotchPreview(in rect: NSRect) {
-        let panelWidth = min(rect.width * 0.88, 620)
-        let panelHeight = min(rect.height * 0.78, 106)
-        let panelRect = NSRect(
-            x: rect.midX - panelWidth / 2,
-            y: rect.maxY - panelHeight,
-            width: panelWidth,
-            height: panelHeight
-        )
-
-        drawTopAttachedSurface(in: panelRect)
-
-        drawToolbarLine(in: panelRect, leadingInset: 36)
-        drawTileRow(in: panelRect.insetBy(dx: 34, dy: 16), count: 5)
-    }
-
-    private func drawFloatingSurface(in rect: NSRect, radius: CGFloat, shadow: Bool) {
-        let path = NSBezierPath(roundedRect: rect, xRadius: radius, yRadius: radius)
-
-        guard let ctx = NSGraphicsContext.current else { return }
-        ctx.saveGraphicsState()
-        if shadow {
-            let panelShadow = NSShadow()
-            panelShadow.shadowColor = NSColor.black.withAlphaComponent(0.34)
-            panelShadow.shadowBlurRadius = 18
-            panelShadow.shadowOffset = NSSize(width: 0, height: -6)
-            panelShadow.set()
-        }
-        surfaceColor.withAlphaComponent(0.92).setFill()
-        path.fill()
-        ctx.restoreGraphicsState()
-
-        WooTheme.settingsInk.withAlphaComponent(0.14).setStroke()
-        path.lineWidth = 1
-        path.stroke()
-    }
-
-    private func drawTopAttachedSurface(in rect: NSRect) {
-        let path = notchPath(in: rect, flare: 14, bottomRadius: 18)
-        surfaceColor.withAlphaComponent(0.92).setFill()
-        path.fill()
-
-        WooTheme.settingsInk.withAlphaComponent(0.14).setStroke()
-        path.lineWidth = 1
-        path.stroke()
-    }
-
-    private func drawToolbarLine(in panelRect: NSRect, leadingInset: CGFloat = 18) {
-        let y = panelRect.maxY - 22
-        let active = NSRect(x: panelRect.minX + leadingInset, y: y, width: 46, height: 10)
-        accentBlue.setFill()
-        NSBezierPath(roundedRect: active, xRadius: 5, yRadius: 5).fill()
-
-        var x = active.maxX + 10
-        for _ in 0..<3 {
-            let pill = NSRect(x: x, y: y, width: 34, height: 10)
-            WooTheme.settingsInk.withAlphaComponent(0.16).setFill()
-            NSBezierPath(roundedRect: pill, xRadius: 5, yRadius: 5).fill()
-            x += 44
-        }
-    }
-
-    private func drawTileRow(in rect: NSRect, count: Int) {
-        let contentRect = NSRect(
-            x: rect.minX,
-            y: rect.minY,
-            width: rect.width,
-            height: max(28, rect.height - 28)
-        )
-        let gap: CGFloat = 10
-        let tileWidth = max(34, (contentRect.width - gap * CGFloat(count - 1)) / CGFloat(count))
-        for index in 0..<count {
-            let tileRect = NSRect(
-                x: contentRect.minX + CGFloat(index) * (tileWidth + gap),
-                y: contentRect.minY,
-                width: tileWidth,
-                height: contentRect.height
-            )
-            WooTheme.settingsInk.withAlphaComponent(0.10).setFill()
-            NSBezierPath(roundedRect: tileRect, xRadius: 8, yRadius: 8).fill()
-
-            let bar = NSRect(
-                x: tileRect.minX + 8,
-                y: tileRect.midY - 4,
-                width: max(18, tileRect.width - 16),
-                height: 8
-            )
-            (index == 0 ? accentBlue : WooTheme.settingsInk.withAlphaComponent(0.24)).setFill()
-            NSBezierPath(roundedRect: bar, xRadius: 4, yRadius: 4).fill()
-        }
-    }
-
-    private func notchPath(in rect: NSRect, flare: CGFloat, bottomRadius: CGFloat) -> NSBezierPath {
-        let flare = max(0, min(flare, rect.width * 0.25, rect.height))
-        let bodyLeft = rect.minX + flare
-        let bodyRight = rect.maxX - flare
-        let bottom = max(0, min(bottomRadius, (bodyRight - bodyLeft) * 0.5, rect.height))
-        let path = NSBezierPath()
-        path.move(to: NSPoint(x: rect.minX, y: rect.maxY))
-        path.line(to: NSPoint(x: rect.maxX, y: rect.maxY))
-        path.curve(
-            to: NSPoint(x: bodyRight, y: rect.maxY - flare),
-            controlPoint1: NSPoint(x: rect.maxX - flare * 0.5, y: rect.maxY),
-            controlPoint2: NSPoint(x: bodyRight, y: rect.maxY - flare * 0.5)
-        )
-        path.line(to: NSPoint(x: bodyRight, y: rect.minY + bottom))
-        path.curve(
-            to: NSPoint(x: bodyRight - bottom, y: rect.minY),
-            controlPoint1: NSPoint(x: bodyRight, y: rect.minY + bottom * 0.45),
-            controlPoint2: NSPoint(x: bodyRight - bottom * 0.45, y: rect.minY)
-        )
-        path.line(to: NSPoint(x: bodyLeft + bottom, y: rect.minY))
-        path.curve(
-            to: NSPoint(x: bodyLeft, y: rect.minY + bottom),
-            controlPoint1: NSPoint(x: bodyLeft + bottom * 0.45, y: rect.minY),
-            controlPoint2: NSPoint(x: bodyLeft, y: rect.minY + bottom * 0.45)
-        )
-        path.line(to: NSPoint(x: bodyLeft, y: rect.maxY - flare))
-        path.curve(
-            to: NSPoint(x: rect.minX, y: rect.maxY),
-            controlPoint1: NSPoint(x: bodyLeft, y: rect.maxY - flare * 0.5),
-            controlPoint2: NSPoint(x: rect.minX + flare * 0.5, y: rect.maxY)
-        )
-        path.close()
-        return path
-    }
-
-}
-
-private final class HistoryPanelModeOptionView: NSControl {
-    let mode: HistoryPanelSettingsMode
-    let title: NSTextField
-    let subtitle: NSTextField
-
-    var isSelected: Bool = false {
-        didSet { applyAppearance() }
-    }
-
-    override var isEnabled: Bool {
-        didSet { applyAppearance() }
-    }
-
-    private let checkView = NSImageView()
-    private var trackingArea: NSTrackingArea?
-    private var isHovered = false {
-        didSet { applyAppearance() }
-    }
-
-    private let accentBlue = NSColor(
-        calibratedRed: 0x11 / 255.0,
-        green: 0x7D / 255.0,
-        blue: 0xFF / 255.0,
-        alpha: 1.0
-    )
-
-    init(mode: HistoryPanelSettingsMode, title: String, subtitle: String) {
-        self.mode = mode
-        self.title = NSTextField(labelWithString: title)
-        self.subtitle = NSTextField(wrappingLabelWithString: subtitle)
-        super.init(frame: .zero)
-        commonInit()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func commonInit() {
-        translatesAutoresizingMaskIntoConstraints = false
-        wantsLayer = true
-        layer?.cornerRadius = 13
-        layer?.cornerCurve = .continuous
-
-        title.font = WooTheme.font(ofSize: 13, weight: .semibold)
-        title.isEditable = false
-        title.isSelectable = false
-        title.refusesFirstResponder = true
-        title.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(title)
-
-        subtitle.font = WooTheme.font(ofSize: 11, weight: .medium)
-        subtitle.isEditable = false
-        subtitle.isSelectable = false
-        subtitle.refusesFirstResponder = true
-        subtitle.lineBreakMode = .byWordWrapping
-        subtitle.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(subtitle)
-
-        checkView.translatesAutoresizingMaskIntoConstraints = false
-        checkView.image = NSImage(systemSymbolName: "checkmark.circle.fill", accessibilityDescription: nil)
-        checkView.symbolConfiguration = NSImage.SymbolConfiguration(pointSize: 18, weight: .semibold)
-        checkView.imageScaling = .scaleProportionallyUpOrDown
-        addSubview(checkView)
-
-        NSLayoutConstraint.activate([
-            heightAnchor.constraint(greaterThanOrEqualToConstant: 92),
-
-            checkView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
-            checkView.topAnchor.constraint(equalTo: topAnchor, constant: 18),
-            checkView.widthAnchor.constraint(equalToConstant: 18),
-            checkView.heightAnchor.constraint(equalToConstant: 18),
-
-            title.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
-            title.topAnchor.constraint(equalTo: topAnchor, constant: 18),
-            title.trailingAnchor.constraint(lessThanOrEqualTo: checkView.leadingAnchor, constant: -8),
-
-            subtitle.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14),
-            subtitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: 4),
-            subtitle.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14),
-            subtitle.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14),
-        ])
-
-        setContentCompressionResistancePriority(.required, for: .vertical)
-        applyAppearance()
-    }
-
-    override func hitTest(_ point: NSPoint) -> NSView? {
-        let result = super.hitTest(point)
-        guard let result else { return nil }
-        return result === self ? result : self
-    }
-
-    override func updateTrackingAreas() {
-        super.updateTrackingAreas()
-        if let trackingArea {
-            removeTrackingArea(trackingArea)
-        }
-        let area = NSTrackingArea(
-            rect: bounds,
-            options: [.mouseEnteredAndExited, .activeInActiveApp, .inVisibleRect],
-            owner: self,
-            userInfo: nil
-        )
-        trackingArea = area
-        addTrackingArea(area)
-    }
-
-    override func mouseEntered(with event: NSEvent) {
-        guard isEnabled else { return }
-        isHovered = true
-    }
-
-    override func mouseExited(with event: NSEvent) {
-        isHovered = false
-    }
-
-    override func mouseDown(with event: NSEvent) {
-        guard isEnabled else { return }
-        sendAction(action, to: target)
-    }
-
-    override var acceptsFirstResponder: Bool { isEnabled }
-
-    override func keyDown(with event: NSEvent) {
-        guard isEnabled else { return }
-        let keyCode = Int(event.keyCode)
-        if keyCode == kVK_Space || keyCode == kVK_Return {
-            sendAction(action, to: target)
-        } else {
-            super.keyDown(with: event)
-        }
-    }
-
-    private func applyAppearance() {
-        let enabledAlpha: CGFloat = isEnabled ? 1 : 0.42
-        let backgroundAlpha: CGFloat
-        if isSelected {
-            backgroundAlpha = 0.052
-        } else if isHovered {
-            backgroundAlpha = 0.044
-        } else {
-            backgroundAlpha = 0.018
-        }
-
-        layer?.backgroundColor = WooTheme.settingsInk.withAlphaComponent(backgroundAlpha * enabledAlpha).cgColor
-        layer?.borderColor = (isSelected ? accentBlue : WooTheme.settingsInk.withAlphaComponent(0.09 * enabledAlpha)).cgColor
-        layer?.borderWidth = isSelected ? 2 : 1
-
-        title.textColor = WooTheme.settingsInk.withAlphaComponent(isEnabled ? 0.94 : 0.4)
-        subtitle.textColor = WooTheme.settingsInk.withAlphaComponent(isEnabled ? 0.58 : 0.35)
-        checkView.isHidden = !isSelected
-        checkView.contentTintColor = accentBlue.withAlphaComponent(enabledAlpha)
     }
 }
 

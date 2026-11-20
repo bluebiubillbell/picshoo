@@ -137,6 +137,12 @@ class SettingsWindowController: NSWindowController {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    /// Opens Settings on the line's pane, from the line's menu.
+    func showLineSettings() {
+        showAsSettings(focusingPermissions: false)
+        settingsView.showLineTab()
+    }
+
     func dismissStartupDialogForExternalOpen() {
         guard isStartup else { return }
         isStartup = false

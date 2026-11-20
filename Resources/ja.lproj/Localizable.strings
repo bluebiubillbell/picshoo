@@ -14,18 +14,6 @@
 "launchAtLogin" = "ログイン時に起動";
 "pinAcrossSpaces" = "ピン画像をすべてのデスクトップに表示";
 "pinAcrossSpacesHint" = "オンにすると新しいピン画像がすべてのデスクトップとフルスクリーン操作スペースに表示されます";
-"historyCacheToggleLabel" = "スクリーンショットをキャッシュ";
-"historyCacheToggleHint" = "最近のスクリーンショット、取得した色、アップロード結果を保存し、履歴パネルからすばやく再コピーできます";
-"clipboardTextCacheToggleLabel" = "クリップボードのテキストとファイルを記録";
-"clipboardTextCacheToggleHint" = "ファイルを複製せずテキストと元ファイルへの参照を保存";
-"clipboardTextHistoryLimitLabel" = "テキスト / ファイル履歴の上限";
-"historyCacheLabel" = "画像とメディアの履歴上限";
-"historyPanelDisplayModeLabel" = "履歴パネルの表示方式";
-"historyPanelDisplayModeHint" = "ダイアログまたはノッチで履歴を表示";
-"historyPanelDialogMode" = "ダイアログ";
-"historyPanelDialogModeHint" = "メニューまたはショートカットから横スクロールのプレビューパネルを開きます";
-"historyPanelNotchMode" = "ノッチ";
-"historyPanelNotchModeHint" = "上部ノッチでホバーまたはクリックして開き、離れると自動で隠れます";
 "countdownLabel" = "カウントダウン秒数";
 "countdownHint" = "⌥ Option を押しながら ⌘ をダブルタップするか、スクリーンショットのショートカットを押すと、撮影前にカウントダウンが始まります。Esc でキャンセル";
 "countdownSecondsSuffix" = "秒";
@@ -96,10 +84,6 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "ファイルへ保存";
 "fileSaveShortcutHint" = "エディター内で押すと、設定したスクリーンショット保存先へ PNG として保存します。既定は ⌘S";
-"previousHistoryImageShortcutHeader" = "前の履歴スクリーンショット";
-"nextHistoryImageShortcutHeader" = "次の履歴スクリーンショット";
-"historyPanelShortcutHeader" = "履歴パネル";
-"historyPanelShortcutDefaultDisplay" = "未設定";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "ショートカットは既に使用中です";
@@ -111,9 +95,6 @@
 "shortcutConflictClipboardTextPin" = "このキーの組み合わせはクリップボードテキストをピン留めのショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictClipboard" = "このキーの組み合わせはクリップボードへコピーのショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictFileSave" = "このキーの組み合わせはファイルへ保存のショートカットで既に使用されています。別の組み合わせを選んでください";
-"shortcutConflictPreviousHistoryImage" = "このキーの組み合わせは前の履歴スクリーンショットのショートカットで既に使用されています。別の組み合わせを選んでください";
-"shortcutConflictNextHistoryImage" = "このキーの組み合わせは次の履歴スクリーンショットのショートカットで既に使用されています。別の組み合わせを選んでください";
-"shortcutConflictHistoryPanel" = "このキーの組み合わせは履歴パネルのショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictSelectedImageEdit" = "このキーの組み合わせは選択画像を編集のショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictClipboardImageEdit" = "このキーの組み合わせはクリップボード画像を編集のショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictTextRecognition" = "このキーの組み合わせは文字認識ショートカットで既に使用されています。別の組み合わせを選んでください";
@@ -130,70 +111,7 @@
 "colorPicker" = "カラーピッカー";
 "settings" = "設定";
 "quitApp" = "Picshoo を終了";
-"historyMenu" = "履歴";
-"historyClear" = "履歴を消去";
-"historyCleared" = "履歴を消去しました";
-"historyShowInFinder" = "Finder に表示";
-"historyPanelLock" = "履歴パネルをロック";
-"historyPanelUnlock" = "履歴パネルのロックを解除";
-"historyPanelFavorite" = "お気に入り";
-"historyPanelUnfavorite" = "お気に入りから削除";
-"historyPanelItemFavorited" = "お気に入りに追加しました";
-"historyPanelItemUnfavorited" = "お気に入りから削除しました";
-"historyPanelMenu" = "履歴パネル";
-"historyPanelDeleteAll" = "すべての履歴を削除";
-"historyPanelDeleteSelectedOne" = "%d件の項目を削除";
-"historyPanelDeleteSelected" = "%d件の項目を削除";
-"historyPanelDeletedSelectedOne" = "%d件の項目を削除しました";
-"historyPanelDeletedSelected" = "%d件の項目を削除しました";
-"historyPanelFavoriteFailed" = "お気に入りを変更できません";
-"historyDeletedSkippingFavorites" = "項目を%d件削除、お気に入りを%d件スキップ";
-"historyPanelFilterAll" = "すべて";
-"historyPanelFilterScreenshots" = "スクリーンショット";
-"historyPanelFilterGIF" = "GIF";
-"historyPanelFilterMP4" = "MP4";
-"historyPanelFilterColors" = "カラー";
-"historyPanelFilterText" = "テキスト";
-"historyPanelSearchColorsAndText" = "色、テキスト、ファイルを検索";
-"historyPanelSearchColors" = "色を検索";
-"historyPanelSearchText" = "テキストを検索";
-"historyPanelClearSearch" = "検索をクリア";
-"historyPanelSearchNoResults" = "一致する履歴はありません";
-"historyPreviewCopyText" = "テキストをコピー";
-"historyPreviewTranslateText" = "テキストを翻訳";
-"historyPreviewConvertToQRCode" = "QRコードに変換";
-"historyPreviewQRCodeTooLong" = "テキストが長すぎるためQRコードに変換できません";
 "historyPreviewOriginalText" = "原文";
-"historyPreviewQRCodeTitle" = "テキストのQRコード";
-"historyPanelCopyHint" = "クリックでコピー";
-"historyPanelCopyDragHint" = "クリックでコピー · アプリへドラッグ";
-"historyPanelCopyMarkdownLink" = "MD リンクをコピー";
-"historyPanelCopyPlainLink" = "通常リンクをコピー";
-"historyPanelEmpty" = "履歴がありません";
-"historyPanelShortcutGuide" = "キーボードショートカット";
-"historyPanelShortcutGuideHide" = "履歴に戻る";
-"historyPanelShortcutKeyClick" = "クリック";
-"historyPanelShortcutKeyDrag" = "ドラッグ";
-"historyPanelShortcutKeySpace" = "スペース";
-"historyPanelShortcutSearch" = "検索を開始または終了";
-"historyPanelShortcutSwitchFilter" = "カテゴリを切り替える";
-"historyPanelShortcutSwitchItem" = "前または次の項目に切り替える";
-"historyPanelShortcutToggleSelection" = "1項目を選択または解除";
-"historyPanelShortcutRangeSelection" = "範囲選択";
-"historyPanelShortcutSelectAll" = "表示中の項目をすべて選択";
-"historyPanelShortcutCancel" = "検索を終了または現在の状態を解除";
-"historyPanelShortcutCopyItem" = "項目をコピー";
-"historyPanelShortcutDragItem" = "画像または動画を別のアプリへドラッグ";
-"historyPanelShortcutOpenPreview" = "ホバー中の画像またはテキストをプレビュー";
-"historyPanelShortcutBrowsePreview" = "前後のプレビューを表示";
-"historyPanelShortcutClosePreview" = "プレビューを閉じる";
-"historyPanelShortcutCopyPreview" = "プレビュー内容をコピー";
-"historyPanelShortcutEditImage" = "画像を編集";
-"historyPanelShortcutPinImage" = "画像をピン留め";
-"historyPanelShortcutUploadImage" = "画像をアップロード";
-"historyPanelShortcutTranslateText" = "テキストを翻訳";
-"historyPanelShortcutQRCode" = "QRコードを作成";
-"historyPanelShortcutToggleGuide" = "ショートカット一覧を表示または非表示";
 
 /* Cursor chip */
 "dragToQuickPin" = "ウィンドウをクリックするか範囲をドラッグしてすぐにピン留め";
@@ -455,7 +373,7 @@
 "uploadSavedToast" = "設定を保存しました";
 "uploadCurrentDefault" = "現在のデフォルト";
 "uploadMarkdownToggleTitle" = "Markdown リンクとしてコピー";
-"uploadMarkdownToggleSubtitle" = "オンにすると、アップロード後に Markdown 画像タグ（![](url)）をコピーします。オフの場合は通常の URL をコピーします。履歴パネルでは、クラウド画像のクリックはこの設定に従い、ホバーボタンで MD または通常リンクを選べます";
+"uploadMarkdownToggleSubtitle" = "オンにすると、アップロード後に Markdown 画像タグ（![](url)）をコピーします。オフの場合は通常の URL をコピーします";
 "filenameRuleTitle" = "ファイル名ルール";
 "filenameRuleSubtitle" = "画像アップロード、画像保存の既定名、録画保存の既定名を制御します。拡張子は自動で追加されます";
 "filenameRulePresetLabel" = "プリセット";
@@ -694,18 +612,13 @@
 "finderUploadReadFailed" = "ファイルを読み込めません %@";
 "finderUploadCompleted" = "%d 個のファイルをアップロードしてリンクをコピーしました";
 
-"historyNotchTriggerLabel" = "ノッチの起動方法";
-"historyNotchTriggerHover" = "ホバーで開く";
-"historyNotchTriggerClick" = "クリックで開く";
 
 /* General settings categories */
 "settingsGeneralBasic" = "基本";
 "settingsGeneralCapture" = "撮影とピン留め";
 "settingsGeneralRecording" = "録画";
-"settingsGeneralHistory" = "履歴";
 "settingsGeneralFiles" = "ファイルと出力";
 
-"historyPreviewTextSaveFailed" = "テキストを保存できませんでした、再試行してください";
 
 "windowCapturePreparing" = "スクリーンショットを準備中";
 
@@ -722,10 +635,10 @@
 "ocrOptionalKey" = "認証不要のサーバーでは省略可能";
 "ocrVisionModelHint" = "インストール済みまたは利用可能な視覚モデルを入力";
 "ocrLocalDescription" = "画像をアップロードせずにこの Mac で文字を認識";
-"ocrCloudDescription" = "スクリーンショット翻訳、ピン留め、履歴プレビューを含む OCR の使用時に、選択したプロバイダーへ画像を送信";
+"ocrCloudDescription" = "スクリーンショット翻訳とピン留めを含む OCR の使用時に、選択したプロバイダーへ画像を送信";
 "ocrCompatibleDescription" = "OpenAI、Qwen、ローカルサーバーなどの視覚対応 Chat Completions API を使用 · 設定した URL に画像を送信";
 "ocrOllamaDescription" = "Ollama に接続してインストール済みの視覚モデルを入力 · 設定した Ollama サーバーに画像を送信";
-"ocrTextOnlyDescription" = "このモデルは座標なしのテキストを返します · ピン留めと履歴では画像内の文字選択の代わりに結果パネルを表示";
+"ocrTextOnlyDescription" = "このモデルは座標なしのテキストを返します · ピン留めでは画像内の文字選択の代わりに結果パネルを表示";
 "ocrDocumentation" = "プロバイダーのドキュメント";
 "ocrSettingsSaved" = "設定を自動保存 · 次の認識から適用";
 "ocrConfigurationError" = "必要な認証情報、API URL、モデル設定を入力してください";
@@ -735,22 +648,12 @@
 "ocrTimeoutError" = "OCR がタイムアウトしました · サービスを確認するか再試行してください";
 "ocrRequestFailed" = "OCR リクエストが失敗しました";
 
-"historyPanelFilterFiles" = "ファイル";
 
-"historyPanelFolder" = "フォルダ";
 
-"historyPanelSearchFiles" = "ファイル名とパスを検索";
 
-"historyPanelSourceUnavailable" = "元のファイルを利用できません";
 
-"historyPanelSourceUnavailableHint" = "一部の元ファイルが削除済み、オフライン、または未ダウンロードです";
 
-"historyFilePreviewPrevious" = "前のファイル";
 
-"historyFilePreviewNext" = "次のファイル";
 
-"historyFilePreviewLoading" = "プレビューを読み込み中";
 
-"historyFilePreviewRetry" = "再確認";
 
-"historyFilePreviewUnavailable" = "このファイルはプレビューできません";

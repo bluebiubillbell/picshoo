@@ -109,13 +109,11 @@ enum PinLauncher {
 
     /// Creates a floating pinned window for `image`. When `origin` is nil the
     /// window is centered on the screen under the cursor. Oversized images are
-    /// scaled down to fit the screen. The original image is saved to history
-    /// unless the caller is pinning an existing history entry.
+    /// scaled down to fit the screen.
     static func pin(
         image: NSImage,
         at origin: NSPoint? = nil,
-        source: PinSource? = nil,
-        saveToHistory: Bool = true
+        source: PinSource? = nil
     ) {
         let screen = activeScreen()
         let size = fittedSize(for: image.size, on: screen)
@@ -125,8 +123,7 @@ enum PinLauncher {
             image: image,
             size: size,
             origin: frameOrigin,
-            source: source,
-            saveToHistory: saveToHistory
+            source: source
         )
     }
 
@@ -161,8 +158,7 @@ enum PinLauncher {
                 image: pin.image,
                 size: pin.size,
                 origin: origin,
-                source: source,
-                saveToHistory: true
+                source: source
             )
         }
     }
@@ -171,8 +167,7 @@ enum PinLauncher {
         image: NSImage,
         size: NSSize,
         origin: NSPoint,
-        source: PinSource?,
-        saveToHistory: Bool
+        source: PinSource?
     ) {
         let window = PinWindow(
             contentRect: NSRect(origin: origin, size: size),
@@ -207,10 +202,6 @@ enum PinLauncher {
         NSApp.activate(ignoringOtherApps: true)
         window.makeKeyAndOrderFront(nil)
         window.makeFirstResponder(contentView)
-
-        if saveToHistory {
-            HistoryManager.shared.add(image: image)
-        }
     }
 
     private static func makeTextWindow(
