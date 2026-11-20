@@ -154,7 +154,8 @@ final class LineController: NSObject, NSMenuDelegate {
 
     /// Hangs an image capcap produced, a capture confirmed in its editor,
     /// saved as a PNG in the line's own folder like a copied image.
-    func hang(image: NSImage) {
+    /// With `from`, the area on screen it came from, it flies up from there.
+    func hang(image: NSImage, from: CGRect? = nil) {
         guard started, let png = image.pngDataPreservingBacking() else { return }
         DispatchQueue.global(qos: .userInitiated).async {
             let fm = FileManager.default
@@ -171,7 +172,7 @@ final class LineController: NSObject, NSMenuDelegate {
             do {
                 try fm.createDirectory(at: Inbox.folder, withIntermediateDirectories: true)
                 try png.write(to: url, options: .atomic)
-                DispatchQueue.main.async { [weak self] in self?.hangCapture(url) }
+                DispatchQueue.main.async { [weak self] in self?.hangCapture(url, from: from) }
             } catch {
                 log.error("Could not save a capture for the line: \(error.localizedDescription, privacy: .public)")
             }
@@ -317,8 +318,8 @@ final class LineController: NSObject, NSMenuDelegate {
 
     /// A new screenshot lifts off from where it was taken and flies to its
     /// place on the line. Without a known capture area it simply drops in.
-    private func hangCapture(_ url: URL) {
-        let from = captureRect(of: url)
+    private func hangCapture(_ url: URL, from known: CGRect? = nil) {
+        let from = known ?? captureRect(of: url)
         let screen = from.flatMap { from in
             NSScreen.screens.first { NSMouseInRect(CGPoint(x: from.midX, y: from.midY), $0.frame, false) }
         }

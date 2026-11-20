@@ -23,6 +23,7 @@ final class HotkeyManager {
     private var finderUploadHotKeyRef: EventHotKeyRef?
     private var fullScreenScreenshotHotKeyRef: EventHotKeyRef?
     private var colorPickerHotKeyRef: EventHotKeyRef?
+    private var cameraHotKeyRef: EventHotKeyRef?
     private var callback: ((CaptureTriggerContext) -> Void)?
     private var countdownCallback: (() -> Void)?
     private var quickPinCallback: (() -> Void)?
@@ -39,6 +40,7 @@ final class HotkeyManager {
     private var finderUploadCallback: (() -> Void)?
     private var fullScreenScreenshotCallback: (() -> Void)?
     private var colorPickerCallback: (() -> Void)?
+    private var cameraCallback: (() -> Void)?
     private var eventHandlerRef: EventHandlerRef?
 
     private static let regularHotKeySignature: OSType = OSType(0x4341_5043) // 'CAPC'
@@ -58,6 +60,7 @@ final class HotkeyManager {
     private static let clipboardTextPinHotKeyID: UInt32 = 14
     private static let finderUploadHotKeyID: UInt32 = 17
     private static let quickPinHotKeyID: UInt32 = 18
+    private static let cameraHotKeyID: UInt32 = 19
 
     private init() {}
 
@@ -78,6 +81,7 @@ final class HotkeyManager {
         unregisterFinderUpload()
         unregisterFullScreenScreenshot()
         unregisterColorPicker()
+        unregisterCamera()
         if let handler = eventHandlerRef {
             RemoveEventHandler(handler)
             eventHandlerRef = nil
@@ -510,6 +514,31 @@ final class HotkeyManager {
         }
     }
 
+    /// Register the camera hotkey, ⌘⇧6. It is fixed, not set in Settings.
+    func registerCamera(callback: @escaping () -> Void) {
+        self.cameraCallback = callback
+        unregisterCamera()
+
+        let (keyCode, modifiers) = currentCameraHotkey()
+        installEventHandlerIfNeeded()
+        var ref: EventHotKeyRef?
+        let id = EventHotKeyID(signature: Self.regularHotKeySignature, id: Self.cameraHotKeyID)
+        let status = RegisterEventHotKey(
+            keyCode, modifiers, id,
+            GetApplicationEventTarget(), 0, &ref
+        )
+        if status == noErr, let ref = ref {
+            cameraHotKeyRef = ref
+        }
+    }
+
+    func unregisterCamera() {
+        if let ref = cameraHotKeyRef {
+            UnregisterEventHotKey(ref)
+            cameraHotKeyRef = nil
+        }
+    }
+
     /// Returns the (keyCode, modifiers) for the countdown variant — user hotkey + ⌥.
     /// Returns nil if no custom hotkey is set or the saved hotkey already contains ⌥.
     func currentCountdownHotkey() -> (keyCode: UInt32, modifiers: UInt32)? {
@@ -789,6 +818,11 @@ final class HotkeyManager {
         return modifierString(mods) + keyString(kc)
     }
 
+    /// The camera hotkey: ⌘⇧6.
+    func currentCameraHotkey() -> (keyCode: UInt32, modifiers: UInt32) {
+        (UInt32(kVK_ANSI_6), UInt32(cmdKey | shiftKey))
+    }
+
     /// Returns (keyCode, carbonModifiers) for the saved copy-to-clipboard
     /// hotkey, or nil when the user hasn't bound one (the default is
     /// "double-tap ⌘", handled separately by `KeyMonitor`).
@@ -889,6 +923,17 @@ final class HotkeyManager {
     func hotkeyConflictMessage(forKeyCode keyCode: UInt32,
                                modifiers: UInt32,
                                assigningTo slot: HotkeySlot? = nil) -> String? {
+        let camera = currentCameraHotkey()
+        if camera.keyCode == keyCode {
+            if camera.modifiers == modifiers {
+                return L10n.shortcutConflictCamera
+            }
+            // The screenshot hotkey's ⌥ variant becomes the countdown hotkey.
+            if slot == .screenshot, modifiers & UInt32(optionKey) == 0,
+               camera.modifiers == modifiers | UInt32(optionKey) {
+                return L10n.shortcutConflictCamera
+            }
+        }
         if slot != .screenshot {
             if let (kc, m) = currentHotkey(), kc == keyCode, m == modifiers {
                 return L10n.shortcutConflictScreenshot
@@ -1138,6 +1183,8 @@ final class HotkeyManager {
                     callback = mgr.fullScreenScreenshotCallback
                 case HotkeyManager.colorPickerHotKeyID:
                     callback = mgr.colorPickerCallback
+                case HotkeyManager.cameraHotKeyID:
+                    callback = mgr.cameraCallback
                 default:
                     callback = nil
                 }
@@ -1244,6 +1291,12 @@ final class HotkeyManager {
             item.keyEquivalentModifierMask = []
             return
         }
+        apply(keyCode: kc, modifiers: mods, to: item)
+    }
+
+    static func applyCameraToMenuItem(_ item: NSMenuItem) {
+        item.attributedTitle = nil
+        let (kc, mods) = HotkeyManager.shared.currentCameraHotkey()
         apply(keyCode: kc, modifiers: mods, to: item)
     }
 

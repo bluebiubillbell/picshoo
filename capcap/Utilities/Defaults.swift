@@ -235,6 +235,7 @@ enum L10n {
     static var shortcutConflictFileUpload: String { s("shortcutConflictFileUpload") }
     static var shortcutConflictFullScreenScreenshot: String { s("shortcutConflictFullScreenScreenshot") }
     static var shortcutConflictColorPicker: String { s("shortcutConflictColorPicker") }
+    static var shortcutConflictCamera: String { s("shortcutConflictCamera") }
 
     // Menu bar
     static var historyPreviewOriginalText: String { s("historyPreviewOriginalText") }
@@ -244,6 +245,11 @@ enum L10n {
     static var mergeImages: String { s("mergeImages") }
     static var uploadFilesMenu: String { s("uploadFilesMenu") }
     static var colorPicker: String { s("colorPicker") }
+    static var takePhoto: String { s("takePhoto") }
+    static var cameraHint: String { s("cameraHint") }
+    static var cameraUnavailable: String { s("cameraUnavailable") }
+    static var cameraDeniedTitle: String { s("cameraDeniedTitle") }
+    static var cameraDeniedMessage: String { s("cameraDeniedMessage") }
     static var settings: String { s("settings") }
     static var quitApp: String { s("quitApp") }
 

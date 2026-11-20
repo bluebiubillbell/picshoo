@@ -103,12 +103,18 @@
 "shortcutConflictRecord" = "This key combination is already used by the Record shortcut. Please choose a different one";
 "shortcutConflictFullScreenScreenshot" = "This key combination is already used by the Full Screen Screenshot shortcut. Please choose a different one";
 "shortcutConflictColorPicker" = "This key combination is already used by the Color Picker shortcut. Please choose a different one";
+"shortcutConflictCamera" = "This key combination is already used by the Take Photo shortcut. Please choose a different one";
 
 /* Menu bar */
 "takeScreenshot" = "Take Screenshot";
 "takeFullScreenScreenshot" = "Capture Full Screen";
 "record" = "Record";
 "colorPicker" = "Color Picker";
+"takePhoto" = "Take Photo";
+"cameraHint" = "Space or Return to take, Esc to cancel";
+"cameraUnavailable" = "No camera found";
+"cameraDeniedTitle" = "Camera access is off";
+"cameraDeniedMessage" = "Picshoo needs the camera to take photos. Turn it on in System Settings";
 "settings" = "Settings";
 "quitApp" = "Quit Picshoo";
 "historyPreviewOriginalText" = "Original Text";

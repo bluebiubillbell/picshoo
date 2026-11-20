@@ -8,6 +8,7 @@ class StatusBarController: NSObject {
     private let onMergeImages: () -> Void
     private let onUploadFiles: () -> Void
     private let onColorPicker: () -> Void
+    private let onTakePhoto: () -> Void
     private let onOpenSettings: () -> Void
 
     init(
@@ -17,6 +18,7 @@ class StatusBarController: NSObject {
         onMergeImages: @escaping () -> Void,
         onUploadFiles: @escaping () -> Void,
         onColorPicker: @escaping () -> Void,
+        onTakePhoto: @escaping () -> Void,
         onOpenSettings: @escaping () -> Void
     ) {
         self.onTakeScreenshot = onTakeScreenshot
@@ -25,6 +27,7 @@ class StatusBarController: NSObject {
         self.onMergeImages = onMergeImages
         self.onUploadFiles = onUploadFiles
         self.onColorPicker = onColorPicker
+        self.onTakePhoto = onTakePhoto
         self.onOpenSettings = onOpenSettings
 
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -94,6 +97,12 @@ class StatusBarController: NSObject {
         colorPickerItem.image = Self.menuIcon(systemName: "eyedropper")
         HotkeyManager.applyColorPickerToMenuItem(colorPickerItem)
         menu.addItem(colorPickerItem)
+
+        let photoItem = NSMenuItem(title: L10n.takePhoto, action: #selector(takePhoto), keyEquivalent: "")
+        photoItem.target = self
+        photoItem.image = Self.menuIcon(systemName: "camera")
+        HotkeyManager.applyCameraToMenuItem(photoItem)
+        menu.addItem(photoItem)
 
         menu.addItem(NSMenuItem.separator())
 
@@ -170,6 +179,10 @@ class StatusBarController: NSObject {
 
     @objc private func colorPicker() {
         onColorPicker()
+    }
+
+    @objc private func takePhoto() {
+        onTakePhoto()
     }
 
     @objc private func openSettings() {

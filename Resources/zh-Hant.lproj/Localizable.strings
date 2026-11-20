@@ -103,12 +103,18 @@
 "shortcutConflictRecord" = "這組按鍵已用於錄製快捷鍵。請選擇其他組合";
 "shortcutConflictFullScreenScreenshot" = "這組按鍵已用於截全螢幕快捷鍵。請選擇其他組合";
 "shortcutConflictColorPicker" = "這組按鍵已用於取色器快捷鍵。請選擇其他組合";
+"shortcutConflictCamera" = "這組按鍵已用於拍照快捷鍵。請選擇其他組合";
 
 /* Menu bar */
 "takeScreenshot" = "截圖";
 "takeFullScreenScreenshot" = "截全螢幕";
 "record" = "錄製";
 "colorPicker" = "取色器";
+"takePhoto" = "拍照";
+"cameraHint" = "空白鍵或 Return 拍照，Esc 取消";
+"cameraUnavailable" = "找不到相機";
+"cameraDeniedTitle" = "相機權限已關閉";
+"cameraDeniedMessage" = "Picshoo 需要使用相機拍照，請在系統設定中開啟";
 "settings" = "設定";
 "quitApp" = "結束 Picshoo";
 "historyPreviewOriginalText" = "原文";

@@ -137,6 +137,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             onMergeImages: { [weak self] in self?.handleImageMergeMenuTrigger() },
             onUploadFiles: { [weak self] in self?.handleFileUploadTrigger() },
             onColorPicker: { [weak self] in self?.handleColorPickerTrigger() },
+            onTakePhoto: { [weak self] in self?.handleCameraTrigger() },
             onOpenSettings: { [weak self] in self?.openSettings() }
         )
         statusBarController.setMenuBarVisible(Defaults.showMenuBar)
@@ -339,6 +340,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             HotkeyManager.shared.unregisterColorPicker()
         }
+
+        HotkeyManager.shared.registerCamera { [weak self] in
+            self?.handleCameraTrigger()
+        }
     }
 
     private func unregisterNonScreenshotHotkeys() {
@@ -356,6 +361,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         HotkeyManager.shared.unregisterFinderUpload()
         HotkeyManager.shared.unregisterFullScreenScreenshot()
         HotkeyManager.shared.unregisterColorPicker()
+        HotkeyManager.shared.unregisterCamera()
     }
 
     @discardableResult
@@ -755,6 +761,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
         fileUploadWindowController = controller
         controller.show()
+    }
+
+    /// ⌘⇧6: a photo from the camera, hung on the line.
+    func handleCameraTrigger() {
+        guard overlayController == nil, recordingEngine == nil, !countdownActive else { return }
+        MainActor.assumeIsolated { CameraCapture.shared.start() }
     }
 
     func handleColorPickerTrigger() {

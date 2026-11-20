@@ -103,12 +103,18 @@
 "shortcutConflictRecord" = "Cette combinaison de touches est déjà utilisée par le raccourci Enregistrer. Veuillez en choisir une autre";
 "shortcutConflictFullScreenScreenshot" = "Cette combinaison de touches est déjà utilisée par le raccourci Capture plein écran. Veuillez en choisir une autre";
 "shortcutConflictColorPicker" = "Cette combinaison de touches est déjà utilisée par le raccourci Pipette. Veuillez en choisir une autre";
+"shortcutConflictCamera" = "Cette combinaison de touches est déjà utilisée par le raccourci Prendre une photo. Veuillez en choisir une autre";
 
 /* Menu bar */
 "takeScreenshot" = "Capturer l'écran";
 "takeFullScreenScreenshot" = "Capturer le plein écran";
 "record" = "Enregistrer";
 "colorPicker" = "Pipette";
+"takePhoto" = "Prendre une photo";
+"cameraHint" = "Espace ou Retour pour prendre, Échap pour annuler";
+"cameraUnavailable" = "Aucune caméra trouvée";
+"cameraDeniedTitle" = "L'accès à la caméra est désactivé";
+"cameraDeniedMessage" = "Picshoo a besoin de la caméra pour prendre des photos. Activez-la dans les Réglages Système";
 "settings" = "Réglages";
 "quitApp" = "Quitter Picshoo";
 "historyPreviewOriginalText" = "Texte original";

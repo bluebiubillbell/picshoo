@@ -103,12 +103,18 @@
 "shortcutConflictRecord" = "Tổ hợp phím này đã được dùng cho phím tắt ghi màn hình. Vui lòng chọn tổ hợp khác";
 "shortcutConflictFullScreenScreenshot" = "Tổ hợp phím này đã được dùng cho phím tắt chụp toàn màn hình. Vui lòng chọn tổ hợp khác";
 "shortcutConflictColorPicker" = "Tổ hợp phím này đã được dùng cho phím tắt Chọn màu. Vui lòng chọn tổ hợp khác";
+"shortcutConflictCamera" = "Tổ hợp phím này đã được dùng cho phím tắt Chụp ảnh. Vui lòng chọn tổ hợp khác";
 
 /* Menu bar */
 "takeScreenshot" = "Chụp màn hình";
 "takeFullScreenScreenshot" = "Chụp toàn màn hình";
 "record" = "Ghi màn hình";
 "colorPicker" = "Chọn màu";
+"takePhoto" = "Chụp ảnh";
+"cameraHint" = "Space hoặc Return để chụp, Esc để hủy";
+"cameraUnavailable" = "Không tìm thấy camera";
+"cameraDeniedTitle" = "Quyền truy cập camera đang tắt";
+"cameraDeniedMessage" = "Picshoo cần camera để chụp ảnh. Hãy bật trong Cài đặt hệ thống";
 "settings" = "Cài đặt";
 "quitApp" = "Thoát Picshoo";
 "historyPreviewOriginalText" = "Văn bản gốc";

@@ -103,12 +103,18 @@
 "shortcutConflictRecord" = "このキーの組み合わせは録画ショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictFullScreenScreenshot" = "このキーの組み合わせはフルスクリーンショットのショートカットで既に使用されています。別の組み合わせを選んでください";
 "shortcutConflictColorPicker" = "このキーの組み合わせはカラーピッカーのショートカットで既に使用されています。別の組み合わせを選んでください";
+"shortcutConflictCamera" = "このキーの組み合わせは写真を撮るのショートカットで既に使用されています。別の組み合わせを選んでください";
 
 /* Menu bar */
 "takeScreenshot" = "スクリーンショット";
 "takeFullScreenScreenshot" = "フルスクリーンショット";
 "record" = "録画";
 "colorPicker" = "カラーピッカー";
+"takePhoto" = "写真を撮る";
+"cameraHint" = "スペースかReturnで撮影、Escでキャンセル";
+"cameraUnavailable" = "カメラが見つかりません";
+"cameraDeniedTitle" = "カメラへのアクセスがオフです";
+"cameraDeniedMessage" = "Picshoo で写真を撮るにはカメラが必要です。システム設定でオンにしてください";
 "settings" = "設定";
 "quitApp" = "Picshoo を終了";
 "historyPreviewOriginalText" = "原文";

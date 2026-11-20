@@ -90,6 +90,8 @@
 	<string>AccentColor</string>
 	<key>NSAppleEventsUsageDescription</key>
 	<string>Picshoo reads the current Finder selection when you use edit, pin, or upload shortcuts</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Picshoo needs camera access to take photos</string>
 	<key>NSMainNibFile</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
