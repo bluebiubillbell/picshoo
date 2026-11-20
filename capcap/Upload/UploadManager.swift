@@ -40,7 +40,6 @@ final class UploadManager {
             switch result {
             case .failure:
                 self.inFlight = false
-                HistoryManager.shared.add(image: image)
                 ToastWindow.show(message: L10n.screenshotCompressionFailed, on: screen, duration: 3.0)
             case .success(let output):
                 let fileName = FilenameTemplate.imageFileName(
@@ -75,13 +74,11 @@ final class UploadManager {
                             let pasteboard = NSPasteboard.general
                             pasteboard.clearContents()
                             pasteboard.setString(copyText, forType: .string)
-                            HistoryManager.shared.add(image: image, cloudURL: url)
                             ToastWindow.show(
                                 message: asMarkdown ? L10n.uploadCopiedMarkdown : L10n.uploadCopied,
                                 on: screen
                             )
                         case .failure(let err):
-                            HistoryManager.shared.add(image: image)
                             let msg = (err as? UploadError)?.errorDescription
                                 ?? err.localizedDescription
                             ToastWindow.show(message: "\(L10n.uploadFailedPrefix) \(msg)", on: screen)

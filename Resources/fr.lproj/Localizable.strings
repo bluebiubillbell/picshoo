@@ -14,18 +14,6 @@
 "launchAtLogin" = "Lancer à la connexion";
 "pinAcrossSpaces" = "Afficher les épingles sur tous les bureaux";
 "pinAcrossSpacesHint" = "Les nouvelles images épinglées apparaissent sur chaque bureau et espace plein écran";
-"historyCacheToggleLabel" = "Mettre les captures en cache";
-"historyCacheToggleHint" = "Enregistre les captures récentes, les couleurs prélevées et les liens téléversés pour les recopier depuis le panneau d'historique";
-"clipboardTextCacheToggleLabel" = "Enregistrer le texte et les fichiers du presse-papiers";
-"clipboardTextCacheToggleHint" = "Conserver le texte et les références aux fichiers sans les copier";
-"clipboardTextHistoryLimitLabel" = "Limite de l’historique texte / fichiers";
-"historyCacheLabel" = "Limite de l’historique des images et médias";
-"historyPanelDisplayModeLabel" = "Affichage du panneau d'historique";
-"historyPanelDisplayModeHint" = "Choisir Dialogue ou Encoche pour l'historique";
-"historyPanelDialogMode" = "Dialogue";
-"historyPanelDialogModeHint" = "Ouvre un panneau d'aperçus horizontaux depuis le menu ou le raccourci";
-"historyPanelNotchMode" = "Encoche";
-"historyPanelNotchModeHint" = "Ouvrez l’encoche en haut au survol ou au clic, quittez pour masquer";
 "countdownLabel" = "Secondes du compte à rebours";
 "countdownHint" = "Maintenez ⌥ Option puis double-appuyez sur ⌘ ou utilisez le raccourci de capture pour lancer un compte à rebours avant la capture, Échap pour annuler";
 "countdownSecondsSuffix" = "s";
@@ -96,10 +84,6 @@
 /* Save-to-file shortcut (editor save) */
 "fileSaveShortcutHeader" = "Enregistrer dans un fichier";
 "fileSaveShortcutHint" = "Appuyez dessus dans l'éditeur pour enregistrer la capture en PNG dans le dossier de captures configuré. ⌘S par défaut";
-"previousHistoryImageShortcutHeader" = "Capture précédente de l'historique";
-"nextHistoryImageShortcutHeader" = "Capture suivante de l'historique";
-"historyPanelShortcutHeader" = "Panneau d'historique";
-"historyPanelShortcutDefaultDisplay" = "Non défini";
 
 /* Shortcut conflict */
 "shortcutConflictTitle" = "Raccourci déjà utilisé";
@@ -111,9 +95,6 @@
 "shortcutConflictClipboardTextPin" = "Cette combinaison de touches est déjà utilisée par le raccourci d'épinglage du texte du presse-papiers. Veuillez en choisir une autre";
 "shortcutConflictClipboard" = "Cette combinaison de touches est déjà utilisée par le raccourci de copie dans le presse-papiers. Veuillez en choisir une autre";
 "shortcutConflictFileSave" = "Cette combinaison de touches est déjà utilisée par le raccourci d'enregistrement dans un fichier. Veuillez en choisir une autre";
-"shortcutConflictPreviousHistoryImage" = "Cette combinaison de touches est déjà utilisée par le raccourci Capture précédente de l'historique. Veuillez en choisir une autre";
-"shortcutConflictNextHistoryImage" = "Cette combinaison de touches est déjà utilisée par le raccourci Capture suivante de l'historique. Veuillez en choisir une autre";
-"shortcutConflictHistoryPanel" = "Cette combinaison de touches est déjà utilisée par le raccourci Panneau d'historique. Veuillez en choisir une autre";
 "shortcutConflictSelectedImageEdit" = "Cette combinaison de touches est déjà utilisée par le raccourci Modifier l'image sélectionnée. Veuillez en choisir une autre";
 "shortcutConflictClipboardImageEdit" = "Cette combinaison de touches est déjà utilisée par le raccourci Modifier l'image du presse-papiers. Veuillez en choisir une autre";
 "shortcutConflictTextRecognition" = "Cette combinaison de touches est déjà utilisée par le raccourci Reconnaissance de texte. Veuillez en choisir une autre";
@@ -130,70 +111,7 @@
 "colorPicker" = "Pipette";
 "settings" = "Réglages";
 "quitApp" = "Quitter Picshoo";
-"historyMenu" = "Historique";
-"historyClear" = "Effacer l'historique";
-"historyCleared" = "Historique effacé";
-"historyShowInFinder" = "Afficher dans le Finder";
-"historyPanelLock" = "Verrouiller le panneau d’historique";
-"historyPanelUnlock" = "Déverrouiller le panneau d’historique";
-"historyPanelFavorite" = "Ajouter aux favoris";
-"historyPanelUnfavorite" = "Retirer des favoris";
-"historyPanelItemFavorited" = "Ajouté aux favoris";
-"historyPanelItemUnfavorited" = "Retiré des favoris";
-"historyPanelMenu" = "Panneau d'historique";
-"historyPanelDeleteAll" = "Supprimer tout l'historique";
-"historyPanelDeleteSelectedOne" = "Supprimer %d élément";
-"historyPanelDeleteSelected" = "Supprimer %d éléments";
-"historyPanelDeletedSelectedOne" = "%d élément supprimé";
-"historyPanelDeletedSelected" = "%d éléments supprimés";
-"historyPanelFavoriteFailed" = "Impossible de modifier les favoris";
-"historyDeletedSkippingFavorites" = "Éléments supprimés : %d, favoris ignorés : %d";
-"historyPanelFilterAll" = "Tout";
-"historyPanelFilterScreenshots" = "Captures";
-"historyPanelFilterGIF" = "GIF";
-"historyPanelFilterMP4" = "MP4";
-"historyPanelFilterColors" = "Couleurs";
-"historyPanelFilterText" = "Texte";
-"historyPanelSearchColorsAndText" = "Rechercher couleurs, texte et fichiers";
-"historyPanelSearchColors" = "Rechercher des couleurs";
-"historyPanelSearchText" = "Rechercher du texte";
-"historyPanelClearSearch" = "Effacer la recherche";
-"historyPanelSearchNoResults" = "Aucun historique correspondant";
-"historyPreviewCopyText" = "Copier le texte";
-"historyPreviewTranslateText" = "Traduire le texte";
-"historyPreviewConvertToQRCode" = "Convertir en code QR";
-"historyPreviewQRCodeTooLong" = "Texte trop long pour être converti en code QR";
 "historyPreviewOriginalText" = "Texte original";
-"historyPreviewQRCodeTitle" = "Code QR du texte";
-"historyPanelCopyHint" = "Cliquez pour copier";
-"historyPanelCopyDragHint" = "Cliquez pour copier · faites glisser vers une app";
-"historyPanelCopyMarkdownLink" = "Copier le lien MD";
-"historyPanelCopyPlainLink" = "Copier l'URL simple";
-"historyPanelEmpty" = "Aucun historique";
-"historyPanelShortcutGuide" = "Raccourcis clavier";
-"historyPanelShortcutGuideHide" = "Retour à l’historique";
-"historyPanelShortcutKeyClick" = "Cliquer";
-"historyPanelShortcutKeyDrag" = "Glisser";
-"historyPanelShortcutKeySpace" = "Espace";
-"historyPanelShortcutSearch" = "Rechercher ou fermer la recherche";
-"historyPanelShortcutSwitchFilter" = "Changer de catégorie";
-"historyPanelShortcutSwitchItem" = "Passer à l’élément précédent ou suivant";
-"historyPanelShortcutToggleSelection" = "Sélectionner ou désélectionner un élément";
-"historyPanelShortcutRangeSelection" = "Sélectionner une plage";
-"historyPanelShortcutSelectAll" = "Sélectionner tous les éléments visibles";
-"historyPanelShortcutCancel" = "Quitter la recherche ou effacer l’état actuel";
-"historyPanelShortcutCopyItem" = "Copier l’élément";
-"historyPanelShortcutDragItem" = "Glisser l’image ou la vidéo vers une autre app";
-"historyPanelShortcutOpenPreview" = "Prévisualiser l’image ou le texte survolé";
-"historyPanelShortcutBrowsePreview" = "Parcourir l’aperçu précédent ou suivant";
-"historyPanelShortcutClosePreview" = "Fermer l’aperçu";
-"historyPanelShortcutCopyPreview" = "Copier le contenu de l’aperçu";
-"historyPanelShortcutEditImage" = "Modifier l’image";
-"historyPanelShortcutPinImage" = "Épingler l’image";
-"historyPanelShortcutUploadImage" = "Téléverser l’image";
-"historyPanelShortcutTranslateText" = "Traduire le texte";
-"historyPanelShortcutQRCode" = "Créer un code QR";
-"historyPanelShortcutToggleGuide" = "Afficher ou masquer les raccourcis clavier";
 
 /* Cursor chip */
 "dragToQuickPin" = "Cliquez sur une fenêtre ou sélectionnez une zone pour l’épingler directement";
@@ -455,7 +373,7 @@
 "uploadSavedToast" = "Configuration enregistrée";
 "uploadCurrentDefault" = "Défaut actuel";
 "uploadMarkdownToggleTitle" = "Copier en lien Markdown";
-"uploadMarkdownToggleSubtitle" = "Si activé, copie une balise d'image Markdown (![](url)) après l'envoi ; sinon, copie une URL simple. Dans le panneau Historique, le clic sur une image cloud suit ce réglage, avec des boutons au survol pour MD ou URL simple";
+"uploadMarkdownToggleSubtitle" = "Si activé, copie une balise d'image Markdown (![](url)) après l'envoi ; sinon, copie une URL simple";
 "filenameRuleTitle" = "Règles de nom de fichier";
 "filenameRuleSubtitle" = "Contrôle les téléversements d'image, les noms par défaut des images enregistrées et ceux des enregistrements. Les extensions sont ajoutées automatiquement";
 "filenameRulePresetLabel" = "Préréglage";
@@ -694,18 +612,13 @@
 "finderUploadReadFailed" = "Impossible de lire le fichier %@";
 "finderUploadCompleted" = "%d fichiers téléversés et liens copiés";
 
-"historyNotchTriggerLabel" = "Activation de l’encoche";
-"historyNotchTriggerHover" = "Ouvrir au survol";
-"historyNotchTriggerClick" = "Ouvrir au clic";
 
 /* General settings categories */
 "settingsGeneralBasic" = "Général";
 "settingsGeneralCapture" = "Capture et épingles";
 "settingsGeneralRecording" = "Enregistrement";
-"settingsGeneralHistory" = "Historique";
 "settingsGeneralFiles" = "Fichiers et sortie";
 
-"historyPreviewTextSaveFailed" = "Impossible d’enregistrer le texte, veuillez réessayer";
 
 "windowCapturePreparing" = "Préparation de la capture";
 
@@ -722,10 +635,10 @@
 "ocrOptionalKey" = "Facultatif pour un serveur sans authentification";
 "ocrVisionModelHint" = "Saisissez un modèle visuel installé ou disponible";
 "ocrLocalDescription" = "Reconnaître le texte sur ce Mac sans téléverser les images";
-"ocrCloudDescription" = "Les images sont envoyées au fournisseur choisi lors de la reconnaissance, y compris pour la traduction de captures, les images épinglées et l’historique";
+"ocrCloudDescription" = "Les images sont envoyées au fournisseur choisi lors de la reconnaissance, y compris pour la traduction de captures et les images épinglées";
 "ocrCompatibleDescription" = "Utilisez une API Chat Completions visuelle, dont OpenAI, Qwen ou un serveur local · Les images sont envoyées à l’adresse configurée";
 "ocrOllamaDescription" = "Connectez Ollama et indiquez un modèle visuel installé · Les images sont envoyées au serveur Ollama configuré";
-"ocrTextOnlyDescription" = "Ce modèle renvoie du texte sans coordonnées · Les images épinglées et l’historique ouvrent le panneau de résultats au lieu de la sélection dans l’image";
+"ocrTextOnlyDescription" = "Ce modèle renvoie du texte sans coordonnées · Les images épinglées ouvrent le panneau de résultats au lieu de la sélection dans l’image";
 "ocrDocumentation" = "Documentation du fournisseur";
 "ocrSettingsSaved" = "Paramètres enregistrés automatiquement · Appliqués à la prochaine reconnaissance";
 "ocrConfigurationError" = "Complétez les identifiants, l’URL et le modèle requis";
@@ -735,22 +648,12 @@
 "ocrTimeoutError" = "Délai OCR dépassé · Vérifiez le service ou réessayez";
 "ocrRequestFailed" = "Échec de la requête OCR";
 
-"historyPanelFilterFiles" = "Fichiers";
 
-"historyPanelFolder" = "Dossier";
 
-"historyPanelSearchFiles" = "Rechercher les noms et chemins de fichiers";
 
-"historyPanelSourceUnavailable" = "Source indisponible";
 
-"historyPanelSourceUnavailableHint" = "Certains fichiers sources sont supprimés, hors ligne ou non téléchargés";
 
-"historyFilePreviewPrevious" = "Fichier précédent";
 
-"historyFilePreviewNext" = "Fichier suivant";
 
-"historyFilePreviewLoading" = "Chargement de l’aperçu";
 
-"historyFilePreviewRetry" = "Vérifier à nouveau";
 
-"historyFilePreviewUnavailable" = "Aperçu indisponible pour ce fichier";

@@ -509,7 +509,7 @@ final class FinderUploadWindowController: NSWindowController,
                     self.reload(item)
                     self.upload(items: uploadItems, index: index + 1, provider: provider, config: config)
 
-                case .success(let (data, contentType, uniformType)):
+                case .success(let (data, contentType, _)):
                     provider.upload(
                         data: data,
                         fileName: item.displayName,
@@ -526,10 +526,6 @@ final class FinderUploadWindowController: NSWindowController,
                             case .success(let url):
                                 item.state = .succeeded(url)
                                 item.isSelected = false
-                                if uniformType?.conforms(to: .image) == true,
-                                   let image = NSImage(data: data) {
-                                    HistoryManager.shared.add(image: image, cloudURL: url)
-                                }
                             case .failure(let error):
                                 let message = (error as? UploadError)?.errorDescription
                                     ?? error.localizedDescription

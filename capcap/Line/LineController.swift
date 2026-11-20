@@ -45,17 +45,14 @@ final class LineController: NSObject, NSMenuDelegate {
     private var menuBarSuppressed = false
     private var clickMonitors: [Any] = []
     private var awaySince: Date?
-    /// Whether the line should be up, if nothing prevents it. A full screen
-    /// app on that screen does: the line waits until you leave full screen.
+    /// Whether the line should be up. It comes down over full screen apps
+    /// too, so screenshots stay within reach while you work in one.
     private var wanted = false
     /// Set when you open the line on purpose, so it stays up while empty.
     private var keepOpen = false
-    /// Opened on purpose with the shortcut or the menu, which counts over a
-    /// full screen app too, until the line tucks away.
-    private var openedOnPurpose = false
 
-    // What brings the line down, from the menu bar's "Bring the line down".
-    // Out of the box, the first two are on and the third off.
+    // What brings the line down, from "Bring the line down" in Settings.
+    // Out of the box, both are on.
 
     /// Resting the pointer in the menu bar. Off, only the shortcut and the
     /// menu open it.
@@ -113,8 +110,6 @@ final class LineController: NSObject, NSMenuDelegate {
         for name in [NSWorkspace.activeSpaceDidChangeNotification, NSWorkspace.didActivateApplicationNotification] {
             workspace.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
                 MainActor.assumeIsolated {
-                    // Opened on purpose counts for the Space it was opened on.
-                    if name == NSWorkspace.activeSpaceDidChangeNotification { self?.openedOnPurpose = false }
                     self?.refresh()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                         self?.refresh()
@@ -247,13 +242,17 @@ final class LineController: NSObject, NSMenuDelegate {
         guard panel.runModal() == .OK, let url = panel.url, Self.extraFolders.count < Self.maxExtraFolders,
               !Self.extraFolders.contains(where: { $0.standardizedFileURL == url.standardizedFileURL }) else { return }
         Self.extraFolders.append(url)
-        startWatcher()
+        if started { startWatcher() }
+        settingsChanged()
     }
 
     private func setInbox(_ on: Bool) {
         Inbox.isEnabled = on
+        // Before the line starts, the choice is only saved; start applies it.
+        guard started else { settingsChanged(); return }
         if on { Inbox.apply() } else { Inbox.restore() }
         startWatcher()
+        settingsChanged()
     }
 
     /// Asked once. Changing system settings is the user's call, never ours.
@@ -262,7 +261,7 @@ final class LineController: NSObject, NSMenuDelegate {
         let alert = NSAlert()
         alert.messageText = L("Let Picshoo handle your screenshots?")
         alert.informativeText = L(
-            "Screenshots will hang on the line the instant you take them, without the floating thumbnail, and will not pile up on your Desktop. Drag one to a folder to keep it, or discard it with the cross. You can turn this off from the menu bar, and your settings come back when Picshoo quits.")
+            "Screenshots will hang on the line the instant you take them, without the floating thumbnail, and will not pile up on your Desktop. Drag one to a folder to keep it, or discard it with the cross. You can turn this off in Settings, and your settings come back when Picshoo quits")
         alert.addButton(withTitle: L("Turn on"))
         alert.addButton(withTitle: L("Not now"))
         if let icon = NSApp.applicationIconImage { alert.icon = icon }
@@ -270,10 +269,11 @@ final class LineController: NSObject, NSMenuDelegate {
         if alert.runModal() == .alertFirstButtonReturn { setInbox(true) }
     }
 
-    /// Watching the clipboard is opt in, from the menu bar only.
+    /// Watching the clipboard is opt in, from Settings.
     private func setClipboard(_ on: Bool) {
         ClipboardWatcher.isEnabled = on
-        if on { clipboardWatcher.start() } else { clipboardWatcher.stop() }
+        if on { clipboardWatcher?.start() } else { clipboardWatcher?.stop() }
+        settingsChanged()
     }
 
     /// Quitting from the menu or logging out runs applicationWillTerminate.
@@ -389,12 +389,9 @@ final class LineController: NSObject, NSMenuDelegate {
                       width: size.width, height: size.height)
     }
 
-    /// Decides whether the panel is ordered in at all: something to show,
-    /// and no full screen app on that screen unless you asked for the line.
+    /// Decides whether the panel is ordered in at all: something to show.
     private func refresh() {
-        let blocked = !openedOnPurpose && (panel.screen.map(FullScreen.blocksLine(on:))
-            ?? LinePanel.screenUnderPointer().map(FullScreen.blocksLine(on:)) ?? false)
-        if wanted && !blocked {
+        if wanted {
             present()
         } else {
             dismiss()
@@ -476,11 +473,9 @@ final class LineController: NSObject, NSMenuDelegate {
             peekUntil = .distantPast
             panel.ignoresMouseEvents = true
             // Opened on purpose lasts until the line tucks away, however that
-            // happens: an empty line then goes, as with the shortcut, and over
-            // a full screen app the line goes too.
-            if keepOpen || openedOnPurpose {
+            // happens: an empty line then goes, as with the shortcut.
+            if keepOpen {
                 keepOpen = false
-                openedOnPurpose = false
                 if line.liveCount == 0 { wanted = false }
                 refresh()
             }
@@ -493,7 +488,6 @@ final class LineController: NSObject, NSMenuDelegate {
         } else {
             keepOpen = true
             wanted = true
-            openedOnPurpose = true
             panel.placeOnScreen()
             updateCapacity()
             refresh()
@@ -582,7 +576,7 @@ final class LineController: NSObject, NSMenuDelegate {
             // An empty line stays up there: only the shortcut and the menu
             // bring it down on purpose.
             if line.liveCount > 0, Self.opensFromMenuBar, let screen = screenUnderPointer,
-               inRevealBand, !menuBarSuppressed, !FullScreen.blocksLine(on: screen) {
+               inRevealBand, !menuBarSuppressed {
                 let since = hotZoneSince ?? now
                 hotZoneSince = since
                 if now.timeIntervalSince(since) >= Self.revealDelay {
@@ -705,22 +699,29 @@ final class LineController: NSObject, NSMenuDelegate {
                 }
             }
             self.registerShortcut()
+            self.settingsChanged()
         }
     }
 
     private func setKeep(_ n: Int?) {
         guard n != Line.keepOnLine else { return }
         Line.keepOnLine = n
-        updateCapacity()
-        line.trim()
+        if started {
+            updateCapacity()
+            line.trim()
+        }
+        settingsChanged()
     }
 
     private func setSize(_ size: Layout.Size) {
         guard size != Layout.size else { return }
         Layout.size = size
-        panel.placeOnScreen(panel.screen)
-        updateCapacity()
-        line.reloadThumbnails()
+        if started {
+            panel.placeOnScreen(panel.screen)
+            updateCapacity()
+            line.reloadThumbnails()
+        }
+        settingsChanged()
     }
 
     private func updateCapacity() {
@@ -730,9 +731,64 @@ final class LineController: NSObject, NSMenuDelegate {
         line.maxItems = max(fits, Line.keepOnLine ?? fits)
     }
 
+    // MARK: Settings
+
+    /// Called by the line's menu to open its pane in Settings. Set by the
+    /// app delegate, which owns the settings window.
+    var openSettings: () -> Void = {}
+
+    /// Lets the Settings pane follow changes made elsewhere, like turning on
+    /// "Handle screenshots" from the first-run prompt.
+    private func settingsChanged() {
+        NotificationCenter.default.post(name: .lineSettingsDidChange, object: nil)
+    }
+
+    var handlesScreenshots: Bool {
+        get { Inbox.isEnabled }
+        set { guard newValue != Inbox.isEnabled else { return }; setInbox(newValue) }
+    }
+
+    var hangsCopiedImages: Bool {
+        get { ClipboardWatcher.isEnabled }
+        set { guard newValue != ClipboardWatcher.isEnabled else { return }; setClipboard(newValue) }
+    }
+
+    var soundOn: Bool {
+        get { line.soundOn }
+        set { line.soundOn = newValue; settingsChanged() }
+    }
+
+    var keepOnLine: Int? {
+        get { Line.keepOnLine }
+        set { setKeep(newValue) }
+    }
+
+    var size: Layout.Size {
+        get { Layout.size }
+        set { setSize(newValue) }
+    }
+
+    var screenshotsFolder: URL? { watcher?.folder }
+
+    func openScreenshotsFolder() {
+        guard let folder = watcher?.folder else { return }
+        NSWorkspace.shared.open(folder)
+    }
+
+    func addExtraFolder() { chooseExtraFolder() }
+
+    func removeExtraFolder(_ folder: URL) {
+        Self.extraFolders.removeAll { $0.standardizedFileURL == folder.standardizedFileURL }
+        if started { startWatcher() }
+        settingsChanged()
+    }
+
+    func recordShortcut() { changeShortcut() }
+
     // MARK: Menu bar
 
-    /// The line's menu, as a submenu of capcap's menu bar item.
+    /// The line's menu, as a submenu of capcap's menu bar item. It holds
+    /// what you do with the line; its settings are in the Settings window.
     func makeMenuItem() -> NSMenuItem {
         let item = NSMenuItem(title: L("Line"), action: nil, keyEquivalent: "")
         item.image = NSImage(systemSymbolName: "tshirt", accessibilityDescription: nil)
@@ -769,115 +825,18 @@ final class LineController: NSObject, NSMenuDelegate {
         putBackItem.isEnabled = line.canPutBack
         menu.addItem(putBackItem)
 
-        let inbox = LineMenuItem(L("Handle screenshots")) { [weak self] in
-            self?.setInbox(!Inbox.isEnabled)
-        }
-        inbox.state = Inbox.isEnabled ? .on : .off
-        inbox.toolTip = L("Screenshots hang instantly and skip the Desktop")
-        menu.addItem(inbox)
-
-        let clipboard = LineMenuItem(L("Hang copied images")) { [weak self] in
-            self?.setClipboard(!ClipboardWatcher.isEnabled)
-        }
-        clipboard.state = ClipboardWatcher.isEnabled ? .on : .off
-        clipboard.toolTip = L("Images you copy hang on the line too")
-        menu.addItem(clipboard)
-
-        let bringDown = NSMenuItem(title: L("Bring the line down"), action: nil, keyEquivalent: "")
-        let options = NSMenu()
-        let hover = LineMenuItem(L("When the pointer rests in the menu bar")) {
-            LineController.opensFromMenuBar.toggle()
-        }
-        hover.state = Self.opensFromMenuBar ? .on : .off
-        options.addItem(hover)
-        let peek = LineMenuItem(L("When something new hangs")) {
-            LineController.peeksAtNew.toggle()
-        }
-        peek.state = Self.peeksAtNew ? .on : .off
-        options.addItem(peek)
-        let fullScreen = LineMenuItem(L("Over full screen apps")) { [weak self] in
-            FullScreen.showLineOver.toggle()
-            self?.refresh()
-        }
-        fullScreen.state = FullScreen.showLineOver ? .on : .off
-        options.addItem(fullScreen)
-        bringDown.submenu = options
-        menu.addItem(bringDown)
-
-        let folderItem = NSMenuItem(title: L("Also watch folders"), action: nil, keyEquivalent: "")
-        let folderMenu = NSMenu()
-        folderMenu.autoenablesItems = false
-        let folders = Self.extraFolders
-        for folder in folders {
-            let item = LineMenuItem(FileManager.default.displayName(atPath: folder.path)) {
-                NSWorkspace.shared.open(folder)
-            }
-            item.state = .on
-            folderMenu.addItem(item)
-        }
-        if !folders.isEmpty { folderMenu.addItem(.separator()) }
-        let add = LineMenuItem(L("Add Folder…")) { [weak self] in self?.chooseExtraFolder() }
-        add.isEnabled = folders.count < Self.maxExtraFolders
-        folderMenu.addItem(add)
-        if !folders.isEmpty {
-            let stop = NSMenuItem(title: L("Stop Watching"), action: nil, keyEquivalent: "")
-            let stopMenu = NSMenu()
-            for folder in folders {
-                stopMenu.addItem(LineMenuItem(FileManager.default.displayName(atPath: folder.path)) { [weak self] in
-                    LineController.extraFolders.removeAll { $0.standardizedFileURL == folder.standardizedFileURL }
-                    self?.startWatcher()
-                })
-            }
-            stop.submenu = stopMenu
-            folderMenu.addItem(stop)
-        }
-        folderItem.submenu = folderMenu
-        menu.addItem(folderItem)
-
-        let keepItem = NSMenuItem(title: L("Keep on line"), action: nil, keyEquivalent: "")
-        let keeps = NSMenu()
-        let fit = LineMenuItem(L("As many as fit")) { [weak self] in self?.setKeep(nil) }
-        fit.state = Line.keepOnLine == nil ? .on : .off
-        keeps.addItem(fit)
-        for n in Line.keepChoices {
-            let item = LineMenuItem(String(format: L("%d photos"), n)) { [weak self] in self?.setKeep(n) }
-            item.state = Line.keepOnLine == n ? .on : .off
-            keeps.addItem(item)
-        }
-        keepItem.submenu = keeps
-        menu.addItem(keepItem)
-
-        let sizeItem = NSMenuItem(title: L("Size"), action: nil, keyEquivalent: "")
-        let sizes = NSMenu()
-        for (size, title) in [(Layout.Size.small, L("Small")), (.medium, L("Medium")), (.large, L("Large"))] {
-            let item = LineMenuItem(title) { [weak self] in self?.setSize(size) }
-            item.state = Layout.size == size ? .on : .off
-            sizes.addItem(item)
-        }
-        sizeItem.submenu = sizes
-        menu.addItem(sizeItem)
-
-        let shortcutItem = NSMenuItem(title: L("Shortcut"), action: nil, keyEquivalent: "")
-        let shortcuts = NSMenu()
-        let current = NSMenuItem(title: Shortcut.current?.display ?? L("None"), action: nil, keyEquivalent: "")
-        current.isEnabled = false
-        shortcuts.addItem(current)
-        shortcuts.addItem(LineMenuItem(L("Change Shortcut…")) { [weak self] in self?.changeShortcut() })
-        shortcutItem.submenu = shortcuts
-        menu.addItem(shortcutItem)
-
         menu.addItem(LineMenuItem(L("Open screenshots folder")) { [weak self] in
-            guard let self else { return }
-            NSWorkspace.shared.open(self.watcher.folder)
+            self?.openScreenshotsFolder()
         })
 
         menu.addItem(.separator())
 
-        let sound = LineMenuItem(L("Sounds")) { [weak self] in
-            guard let self else { return }
-            self.line.soundOn.toggle()
-        }
-        sound.state = line.soundOn ? .on : .off
-        menu.addItem(sound)
+        menu.addItem(LineMenuItem(L("Line Settings")) { [weak self] in
+            self?.openSettings()
+        })
     }
+}
+
+extension Notification.Name {
+    static let lineSettingsDidChange = Notification.Name("picshoo.lineSettingsDidChange")
 }

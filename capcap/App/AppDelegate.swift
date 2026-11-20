@@ -16,7 +16,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var recordingCancelLocalMonitor: Any?
     private var recordingCancelGlobalMonitor: Any?
     private var recordingCancelRequested = false
-    private var historyPanelController: HistoryPanelController?
     private var fileUploadWindowController: FinderUploadWindowController?
     private var fileUploadOpenPanel: NSOpenPanel?
     private var countdownActive = false
@@ -25,7 +24,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var pendingReopenSettingsWorkItem: DispatchWorkItem?
     private var pendingOpenImageURLs: [URL] = []
     private var startupDialogShown = false
-    private let clipboardTextHistoryMonitor = ClipboardTextHistoryMonitor()
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
@@ -33,7 +31,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         registerShareHandoffObserver()
-        clipboardTextHistoryMonitor.start()
 
         if appInitialized {
             flushPendingOpenImageURLs()
@@ -51,7 +48,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        clipboardTextHistoryMonitor.stop()
         MainActor.assumeIsolated { LineController.shared.stop() }
     }
 
@@ -129,9 +125,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ImageMergeLauncher.shared.onContinueEditing = { [weak self] image in
             self?.continueEditingMergedImage(image)
         }
-        historyPanelController = HistoryPanelController { [weak self] entry in
-            _ = self?.launchImageFile(entry.fileURL)
-        }
 
         statusBarController = StatusBarController(
             onTakeScreenshot: { [weak self] in
@@ -144,7 +137,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             onMergeImages: { [weak self] in self?.handleImageMergeMenuTrigger() },
             onUploadFiles: { [weak self] in self?.handleFileUploadTrigger() },
             onColorPicker: { [weak self] in self?.handleColorPickerTrigger() },
-            onOpenHistoryPanel: { [weak self] in self?.handleHistoryPanelTrigger(holdOpenUntilMouseEnters: true) },
             onOpenSettings: { [weak self] in self?.openSettings() }
         )
         statusBarController.setMenuBarVisible(Defaults.showMenuBar)
@@ -153,6 +145,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         MainActor.assumeIsolated {
             LineEditor.shared.present = { [weak self] url, done in
                 self?.launchLineImageEdit(url, onDone: done) ?? false
+            }
+            LineController.shared.openSettings = { [weak self] in
+                self?.configuredSettingsController().showLineSettings()
             }
             LineController.shared.start()
         }
@@ -344,14 +339,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             HotkeyManager.shared.unregisterColorPicker()
         }
-
-        if Defaults.hasCustomHistoryPanelHotkey {
-            HotkeyManager.shared.registerHistoryPanel { [weak self] in
-                self?.handleHistoryPanelTrigger(holdOpenUntilMouseEnters: true)
-            }
-        } else {
-            HotkeyManager.shared.unregisterHistoryPanel()
-        }
     }
 
     private func unregisterNonScreenshotHotkeys() {
@@ -369,7 +356,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         HotkeyManager.shared.unregisterFinderUpload()
         HotkeyManager.shared.unregisterFullScreenScreenshot()
         HotkeyManager.shared.unregisterColorPicker()
-        HotkeyManager.shared.unregisterHistoryPanel()
     }
 
     @discardableResult
@@ -467,10 +453,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         overlayController = controller
         applyHotkeyState()
         return true
-    }
-
-    private func handleHistoryPanelTrigger(holdOpenUntilMouseEnters: Bool = false) {
-        historyPanelController?.toggleFromUserRequest(holdOpenUntilMouseEnters: holdOpenUntilMouseEnters)
     }
 
     /// KeyMonitor entry point for plain double-tap ⌘. While an overlay is
@@ -870,11 +852,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 switch result {
                 case .failure:
-                    HistoryManager.shared.add(image: finalImage)
                     ToastWindow.show(message: L10n.screenshotCompressionFailed, duration: 3.0)
                 case .success(let output):
                     ClipboardManager.copyToClipboard(imageOutput: output)
-                    HistoryManager.shared.add(image: finalImage)
                     ToastWindow.show()
                 }
             }
@@ -1281,7 +1261,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func showSavedRecording(_ destination: URL) {
-        HistoryManager.shared.addFile(destination)
         let directoryPath = SaveDestination.displayPath(destination.deletingLastPathComponent())
         ToastWindow.show(message: L10n.recordingSaved(to: directoryPath))
         if Defaults.autoRevealSavedFiles {
